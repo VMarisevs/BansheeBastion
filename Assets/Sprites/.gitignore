@@ -1,0 +1,13 @@
+*.*
+!Background/*.png
+!Enemies/*.png
+!Friends/*.png
+!Others/*.png
+
+!Background/README.md
+!Enemies/README.md
+!Friends/README.md
+!Others/README.md
+
+!.gitignore
+!README.md

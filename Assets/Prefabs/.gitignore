@@ -1,0 +1,13 @@
+*.*
+!Background/README.md
+!Enemies/README.md
+!Friends/README.md
+!Other/README.md
+
+!Background/*.prefab
+!Enemies/*.prefab
+!Friends/*.prefab
+!Other/*.prefab
+
+!.gitignore
+!README.md

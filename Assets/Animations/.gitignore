@@ -1,0 +1,12 @@
+*.*
+!Animations/*.anim
+!Animations/*.md
+!Animations/README.md
+
+
+!AnimatorControllers/*.controller
+!AnimatorControllers/*.overridecontroller
+!AnimatorControllers/*.md
+!AnimatorControllers/README.md
+
+!.gitignore
