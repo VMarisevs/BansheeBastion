@@ -1,1 +1,0 @@
-### This folder contain all premade images for this game
