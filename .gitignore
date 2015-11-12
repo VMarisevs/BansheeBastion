@@ -23,13 +23,6 @@ sysinfo.txt
 /*.booproj
 
 # ============ #
-# include meta files
-# ============ #
-
-*.*.meta
-*.meta
- 
-# ============ #
 # OS generated #
 # ============ #
 .DS_Store*

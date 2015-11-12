@@ -8,6 +8,10 @@
 !Enemies/*.prefab
 !Friends/*.prefab
 !Other/*.prefab
+!Background/*.prefab.meta
+!Enemies/*.prefab.meta
+!Friends/*.prefab.meta
+!Other/*.prefab.meta
 
 !.gitignore
 !README.md

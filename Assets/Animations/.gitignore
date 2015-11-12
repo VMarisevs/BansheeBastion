@@ -1,16 +1,27 @@
 *.*
 !Animations/Enemies/*.anim
 !Animations/Enemies/*.md
+!Animations/Enemies/*.anim.meta
+!Animations/Enemies/*.md.meta
+
 !Animations/Friends/*.anim
 !Animations/Friends/*.md
+!Animations/Friends/*.anim.meta
+!Animations/Friends/*.md.meta
+
 !Animations/Others/*.anim
 !Animations/Others/*.md
+!Animations/Others/*.anim.meta
+!Animations/Others/*.md.meta
 
 !Animations/README.md
 
 
 !AnimatorControllers/*.controller
 !AnimatorControllers/*.overridecontroller
+!AnimatorControllers/*.controller.meta
+!AnimatorControllers/*.overridecontroller.meta
+
 !AnimatorControllers/*.md
 !AnimatorControllers/README.md
 

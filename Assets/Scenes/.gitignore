@@ -1,5 +1,6 @@
 *.*
 !*.unity
+!*.unity.meta
 
 !.gitignore
 !README.md
