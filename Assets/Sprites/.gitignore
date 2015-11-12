@@ -4,6 +4,11 @@
 !Friends/*.png
 !Others/*.png
 
+!Background/*.png.meta
+!Enemies/*.png.meta
+!Friends/*.png.meta
+!Others/*.png.meta
+
 !Background/README.md
 !Enemies/README.md
 !Friends/README.md
