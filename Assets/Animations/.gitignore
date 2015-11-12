@@ -1,6 +1,11 @@
 *.*
-!Animations/*.anim
-!Animations/*.md
+!Animations/Enemies/*.anim
+!Animations/Enemies/*.md
+!Animations/Friends/*.anim
+!Animations/Friends/*.md
+!Animations/Others/*.anim
+!Animations/Others/*.md
+
 !Animations/README.md
 
 
