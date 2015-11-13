@@ -1,6 +1,8 @@
 *.*
 !*/*.cs.meta
 !*/*.cs
+!*.cs.meta
+!*.cs
 
 !*/README.md
 
