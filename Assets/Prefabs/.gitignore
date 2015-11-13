@@ -1,17 +1,9 @@
 *.*
-!Background/README.md
-!Enemies/README.md
-!Friends/README.md
-!Other/README.md
+!*.meta
+!*/README.md
 
-!Background/*.prefab
-!Enemies/*.prefab
-!Friends/*.prefab
-!Other/*.prefab
-!Background/*.prefab.meta
-!Enemies/*.prefab.meta
-!Friends/*.prefab.meta
-!Other/*.prefab.meta
+!*/*.prefab
+!*/*.prefab.meta
 
 !.gitignore
 !README.md

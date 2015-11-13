@@ -1,15 +1,8 @@
 *.*
-!Background/*.cs
-!Enemies/*.cs
-!Friends/*.cs
-!Interfaces/*.cs
-!Others/*.cs
+!*/*.cs.meta
+!*/*.cs
 
-!Background/README.md
-!Enemies/README.md
-!Friends/README.md
-!Interfaces/README.md
-!Others/README.md
+!*/README.md
 
 !.gitignore
 !README.md

@@ -1,18 +1,9 @@
 *.*
-!Background/*.png
-!Enemies/*.png
-!Friends/*.png
-!Others/*.png
+!*/*.png
 
-!Background/*.png.meta
-!Enemies/*.png.meta
-!Friends/*.png.meta
-!Others/*.png.meta
+!*/*.png.meta
 
-!Background/README.md
-!Enemies/README.md
-!Friends/README.md
-!Others/README.md
+!*/README.md
 
 !.gitignore
 !README.md
