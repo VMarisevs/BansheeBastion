@@ -5,6 +5,9 @@ public abstract class ACharacter : MonoBehaviour {
 
     // move speed
     public float moveTime = 0.1F;
+
+    public Vector2 position = new Vector2(-1, -1);
+
     // blocking layer mask - to make units visible
     public LayerMask blockingLayer;
 

@@ -5,11 +5,26 @@ using Random = UnityEngine.Random;
 public class MapManager : MonoBehaviour {
 
     // public variables
-    public int columns = 16;
-    public int rows = 8;
+    public static int columns = 16;
+    public static int rows = 8;
+    
     // public object arrays
     public GameObject[] groundTiles;
+    
+    public static EntityThing[,] mapArray = new EntityThing[rows, columns];
 
+
+
+
+
+
+
+    public static void putCharacter(EntityThing character, Vector2 pos)
+    {
+        character.location = pos;
+        character.prefab.transform.position = pos;
+        mapArray[(int)pos.x, (int)pos.y] = character;
+    }
 
     // private variables
     private Transform mapHolder;
@@ -29,7 +44,7 @@ public class MapManager : MonoBehaviour {
                 GameObject toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
 
                 // applying position
-                GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
+                GameObject instance = Instantiate(toInstantiate, new Vector2(x, y), Quaternion.identity) as GameObject;
 
                 // adding into parent
                 instance.transform.SetParent(mapHolder);
