@@ -33,9 +33,9 @@ public class LevelManager : MonoBehaviour {
     private void createEnemy(AEnemy enemy)
     {
         EntityThing instance = Instantiate(enemy, new Vector2(1, 1), Quaternion.identity) as EntityThing;
-
-        int x = Random.Range(0, MapManager.columns-1);
-        int y = Random.Range(0, MapManager.rows-1);
+     
+        int x = Random.Range(0, MapManager.rows-1);
+        int y = Random.Range(0, MapManager.columns-1);
         Vector2 pos = new Vector2((float)x,(float)y);
         MapManager.putCharacter(instance, pos);
 

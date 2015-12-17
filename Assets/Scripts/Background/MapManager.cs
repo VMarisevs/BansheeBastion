@@ -17,12 +17,11 @@ public class MapManager : MonoBehaviour {
 
 
 
-
-
     public static void putCharacter(EntityThing character, Vector2 pos)
     {
+        character.gameObject.transform.position = pos;
         character.location = pos;
-        character.prefab.transform.position = pos;
+       // character.prefab.transform.position = pos;
         mapArray[(int)pos.x, (int)pos.y] = character;
     }
 
