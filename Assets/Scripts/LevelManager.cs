@@ -64,7 +64,7 @@ public class LevelManager : MonoBehaviour {
                 instance.transform.SetParent(enemyHolder.transform);
                 
                 MapManager.mapArray[x, y] = instance;
-                MapManager.pathArray[x,y] = 8;
+                MapManager.pathArray[x,y] = 's';
                 LevelManager.enemiesSpawned.Add(instance);
                 spawned = true;
             }

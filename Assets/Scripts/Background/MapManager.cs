@@ -11,9 +11,10 @@ public class MapManager : MonoBehaviour {
     // public object arrays
     public GameObject[] groundTiles;
 
-   public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
-    public static int[,] pathArray = new int[xCol, yRow];
+    public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
+    //public static int[,] pathArray = new int[xCol, yRow];
 
+    public static char[,] pathArray = new char[xCol, yRow];
 
 
     // private variables
@@ -32,11 +33,11 @@ public class MapManager : MonoBehaviour {
             //displayPathMap();
             // remove the char from it's position
 
-            pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
+           // pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
           //  mapArray[character.x, character.y] = null;
 
             // put him into new position
-            pathArray[(int)pos.x, (int)pos.y] = 1;
+           // pathArray[(int)pos.x, (int)pos.y] = 1;
             // mapArray[(int)pos.x, (int)pos.y] = character;
             //clearPathFromPath();
 
@@ -76,15 +77,37 @@ public class MapManager : MonoBehaviour {
     private static void clearPathArray()
     {
         // init pathMap
+        /*
         for (int i = 0; i < pathArray.GetLength(0); i++)
         {
             for (int j=0; j < pathArray.GetLength(1); j++)
             {
-                pathArray[i,j] = 0;
+                pathArray[i,j] = '.';
             }
-        }
-    }
+        }*/
+        pathArray = new char[,] { //y 0   1   2   3   4   5   6   7 
+                                    {'.','.','.','.','.','.','.','.'}, // 0 x
+                                    {'.','.','.','.','.','.','.','.'}, // 1
+                                    {'.','.','.','.','.','.','.','.'}, // 2
+                                    {'.','.','.','.','.','.','.','.'}, // 3
+                                    {'.','.','.','.','.','.','.','.'}, // 4 
+                                    //{'.','.','.','.','.','.','.','.'}, // 5
+                                    {'#','#','#','#','#','#','.','#'}, // 5
+                                    {'.','.','.','.','.','.','.','.'}, // 6
+                                    {'.','.','.','.','.','.','.','.'}, // 7
+                                    {'.','.','.','.','.','.','.','.'}, // 8
+                                    {'.','.','.','.','.','.','.','.'}, // 9
+                                    {'.','.','.','.','D','.','.','.'}, // 10
+                                    {'.','.','.','.','.','.','.','.'}, // 11
+                                    {'.','.','.','.','.','.','.','.'}, // 12
+                                    {'.','.','.','.','.','.','.','.'}, // 13
+                                    {'.','.','.','.','.','.','.','.'}, // 14
+                                    {'.','.','.','.','.','.','.','.'}, // 15
+                                                                                                 
+        };                                                                                    
+    }                                                                                             
 
+    /*
     private static void clearPathFromPath()
     {
         for (int y = 0; y < yRow; y++)
@@ -97,7 +120,7 @@ public class MapManager : MonoBehaviour {
                 }
             }
         }
-    }
+    }*/
 	
     public static void displayPathMap()
     {
@@ -107,7 +130,10 @@ public class MapManager : MonoBehaviour {
         {
             for (int x = 0; x < xCol; x++)
             {
-                path += " " + pathArray[x, y];
+                if (pathArray[x, y] == '.')
+                    path += " O";// + pathArray[x, y];
+                else
+                    path += " " + pathArray[x, y];
             }
             path += "\n";
         }
