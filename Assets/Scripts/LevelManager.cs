@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour {
     public void Start()
     {
         enemyHolder = new GameObject("EnemyHolder").transform;
+        createEnemy(enemyArray[0]);
     }
 
 
@@ -51,7 +52,7 @@ public class LevelManager : MonoBehaviour {
         while (spawned == false)
         {           
            
-            int y = Random.Range(0, MapManager.rows - 1);
+            int y = Random.Range(0, MapManager.yRow - 1);
 
             if (MapManager.mapArray[x, y] == null)
             {
@@ -63,12 +64,12 @@ public class LevelManager : MonoBehaviour {
                 instance.transform.SetParent(enemyHolder.transform);
                 
                 MapManager.mapArray[x, y] = instance;
-                //MapManager.addToPath(x,y);
+                MapManager.pathArray[x,y] = 8;
                 LevelManager.enemiesSpawned.Add(instance);
                 spawned = true;
             }
 
-            if (counter > MapManager.rows)
+            if (counter > MapManager.yRow)
             {
                 spawned = true;
                 //spawnMob = false;
@@ -118,11 +119,11 @@ public class LevelManager : MonoBehaviour {
 
     public void Update()
     {
-        if (spawnMob)
-        {
-            enemySpawner();
+        //if (spawnMob)
+        //{
+        //    enemySpawner();
 
-        }
+        //}
 
         MoveEnemies();
 

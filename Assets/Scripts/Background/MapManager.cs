@@ -5,14 +5,14 @@ using Random = UnityEngine.Random;
 public class MapManager : MonoBehaviour {
 
     // public variables
-    public static int columns = 16;
-    public static int rows = 8;
+    public static int xCol = 16;
+    public static int yRow = 8;
     
     // public object arrays
     public GameObject[] groundTiles;
 
-   public static EntityThing[,] mapArray = new EntityThing[rows, columns];
-    public static int[,] pathArray = new int[8, 16];
+   public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
+    public static int[,] pathArray = new int[xCol, yRow];
 
 
 
@@ -25,9 +25,11 @@ public class MapManager : MonoBehaviour {
     {
 
         //  if (mapArray[(int)pos.x, (int)pos.y] == null)
+        print("x=" + pos.x + " y=" + pos.y);
+        
         if (pathArray[(int)pos.x, (int)pos.y] == 0)
         {
-            displayPathMap();
+            //displayPathMap();
             // remove the char from it's position
 
             pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
@@ -36,9 +38,10 @@ public class MapManager : MonoBehaviour {
             // put him into new position
             pathArray[(int)pos.x, (int)pos.y] = 1;
             // mapArray[(int)pos.x, (int)pos.y] = character;
-            clearPathFromPath();
+            //clearPathFromPath();
 
         }
+        
       
     }
 
@@ -51,9 +54,9 @@ public class MapManager : MonoBehaviour {
         // init map object
         groundHolder = new GameObject("Ground").transform;
 
-        for (int x = 0; x < columns; x++)
+        for (int y = 0; y < yRow; y++)
         {
-            for (int y = 0; y < rows; y++)
+            for (int x = 0; x < xCol; x++)
             {
                 // generating random ground tile
                 GameObject toInstantiate = groundTiles[Random.Range(0, groundTiles.Length)];
@@ -84,24 +87,25 @@ public class MapManager : MonoBehaviour {
 
     private static void clearPathFromPath()
     {
-        for (int i = 0; i < pathArray.GetLength(0); i++)
+        for (int y = 0; y < yRow; y++)
         {
-            for (int j = 0; j < pathArray.GetLength(1); j++)
+            for (int x = 0; x < xCol; x++)
             {
-                if (pathArray[i, j] == 2 || pathArray[i, j] == 3)
+                if (pathArray[x, y] == 2 || pathArray[x, y] == 3)
                 {
-                    pathArray[i, j] = 0;
+                    pathArray[x, y] = 0;
                 }
             }
         }
     }
 	
-    private static void displayPathMap()
+    public static void displayPathMap()
     {
         string path = "";
-        for (int x = 0; x < MapManager.pathArray.GetLength(0); x++)
+        //for (int y = 0; y < yRow; y++)
+        for (int y = yRow-1; y >= 0; y--)
         {
-            for (int y = 0; y < MapManager.pathArray.GetLength(1); y++)
+            for (int x = 0; x < xCol; x++)
             {
                 path += " " + pathArray[x, y];
             }
@@ -114,7 +118,7 @@ public class MapManager : MonoBehaviour {
     {
         // generating the map
         MapSetup();
-        clearPathArray();
+  
 
     }
 }

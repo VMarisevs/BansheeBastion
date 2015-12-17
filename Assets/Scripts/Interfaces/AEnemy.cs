@@ -1,5 +1,6 @@
 ﻿
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AEnemy : EntityThing {
@@ -17,20 +18,30 @@ public class AEnemy : EntityThing {
        
     public void move()
     {
+        
         //  this.run();
         //nextStep = new  Vector2(1, 0);//getNextStep();
+        // update my position
+       // int oldx = (int)transform.position.x;
+       // int oldy = (int)transform.position.y;
+       // MapManager.pathArray[oldx, oldy] = 8;
+
         nextStep = getNextStep();
 
-        if (nextStep != null)
+        if (nextStep != Vector2.zero)
         {
-       
+            
+            //print("x=" + nextStep.x + " y=" + nextStep.y);
+            //MapManager.pathArray[(int)nextStep.x, (int)nextStep.y] = 1;
             MapManager.putCharacter(this, nextStep);
             this.run(nextStep);
+            // MapManager.pathArray[oldx, oldy] = 0;
+            MapManager.displayPathMap();
         }
-       
 
+        
         nextStep = Vector2.zero;
-
+        
 
     }
    
@@ -38,9 +49,9 @@ public class AEnemy : EntityThing {
     {
         if (findPath((int)transform.position.x + 1, (int)transform.position.y))
             return new Vector2(1, 0);
-        if (findPath((int)transform.position.x, (int)transform.position.y + 1))
+        else if (findPath((int)transform.position.x, (int)transform.position.y + 1))
             return new Vector2(0, 1);
-        if (findPath((int)transform.position.x, (int)transform.position.y - 1))
+        else if (findPath((int)transform.position.x, (int)transform.position.y - 1))
             return new Vector2(0, -1);
 
         return Vector2.zero;
@@ -64,14 +75,22 @@ public class AEnemy : EntityThing {
         return Vector2.zero;
         */
     }
-
+    /*
+     map path: 
+        -2 unchecked
+        -1 marked
+        -0 empty
+        1 somebody there
+        8 me
+    */
     private bool findPath(int x, int y)
     {
-        if (x < 0 || x >= MapManager.rows || y < 0 || y >= MapManager.columns)
+        if (x < 0 || x >= MapManager.xCol || y < 0 || y >= MapManager.yRow)
             return false;
 
-        if (x == 7 && y == 6)
+        if (x == 10 && y == 4)
             return true;
+
        // print("x=" + x + "y=" + y);
         if (MapManager.pathArray[x, y] != 0)
             return false;
@@ -141,10 +160,13 @@ public class AEnemy : EntityThing {
 
     public void run(Vector3 whereToGo)
     {
+        //print("*WhereToGo in Run() x=" + whereToGo.x + " y=" + whereToGo.y +"");
         Rigidbody2D rg = gameObject.GetComponent<Rigidbody2D>();
         //rg.MovePosition(whereToGo);
         rg.MovePosition(this.transform.position + whereToGo);
     }
 
     
+    
+
 }
