@@ -1,25 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
 
+    // enemy variety
     public AEnemy[] enemyArray;
-   // private Transform enemyHolder;
+
+    public static List<AEnemy> enemiesSpawned = new List<AEnemy>();
+    public static List<AFriend> friendsSpawned = new List<AFriend>();
+
+    private Transform enemyHolder;
 
     bool spawnMob = true;
+    bool moveBool = true;
 
 
-    private LevelManager()
+    public void Start()
     {
-       
+        enemyHolder = new GameObject("EnemyHolder").transform;
     }
+
+
     private void enemySpawner()
     {
         spawnMob = false;
         if (enemyArray[0] is Slime)
         {
             createEnemy(enemyArray[0]);
+           
             //Slime toInstanciateSlime = (Slime)enemyArray[0];
             //temp.attack();
             //GameObject instance = Instantiate(toInstanciateSlime, new Vector2(1, 1), Quaternion.identity) as GameObject;
@@ -30,16 +40,52 @@ public class LevelManager : MonoBehaviour {
         StartCoroutine(Wait(2));
     }
 
+
     private void createEnemy(AEnemy enemy)
     {
-        EntityThing instance = Instantiate(enemy, new Vector2(1, 1), Quaternion.identity) as EntityThing;
-     
-        int x = Random.Range(0, MapManager.rows-1);
-        int y = Random.Range(0, MapManager.columns-1);
-        Vector2 pos = new Vector2((float)x,(float)y);
-        MapManager.putCharacter(instance, pos);
+        bool spawned = false;
+        int x = 0;// Random.Range(0, MapManager.rows-1);
 
+        int counter = 0;
+
+        while (spawned == false)
+        {           
+           
+            int y = Random.Range(0, MapManager.rows - 1);
+
+            if (MapManager.mapArray[x, y] == null)
+            {
+            
+                Vector3 pos = new Vector2(x, y);
+
+                AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
+
+                instance.transform.SetParent(enemyHolder.transform);
+                
+                MapManager.mapArray[x, y] = instance;
+                //MapManager.addToPath(x,y);
+                LevelManager.enemiesSpawned.Add(instance);
+                spawned = true;
+            }
+
+            if (counter > MapManager.rows)
+            {
+                spawned = true;
+                //spawnMob = false;
+            }
+            counter++;
+ 
+        }
+        
+
+       
+
+        //MapManager.putCharacter(instance, pos);
+
+       
     }
+
+
 
     public IEnumerator Wait(int sec)
     {
@@ -47,6 +93,28 @@ public class LevelManager : MonoBehaviour {
         spawnMob = true;
     }
 
+    public IEnumerator WaitMove(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+        moveBool = true;
+    }
+
+    public void MoveEnemies()
+    {
+        foreach(AEnemy enemy in enemiesSpawned)
+        {
+            StartCoroutine(WaitMove(1f));
+            if (moveBool)
+            {
+                enemy.move();
+                moveBool = false;
+            }
+
+            // print(enemy.transform.position.x);
+            //Wait(1);
+            ///enemy.transform.position = new Vector2(enemy.transform.position.x+1,enemy.transform.position.y);
+        }
+    }
 
     public void Update()
     {
@@ -55,6 +123,8 @@ public class LevelManager : MonoBehaviour {
             enemySpawner();
 
         }
+
+        MoveEnemies();
 
     }
 
