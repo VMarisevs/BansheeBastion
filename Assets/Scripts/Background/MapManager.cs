@@ -11,7 +11,7 @@ public class MapManager : MonoBehaviour {
     // public object arrays
     public GameObject[] groundTiles;
 
-    //public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
+    public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
     //public static int[,] pathArray = new int[xCol, yRow];
 
     public static char[,] pathArray = new char[xCol, yRow];
@@ -22,34 +22,25 @@ public class MapManager : MonoBehaviour {
 
 
 
-    //public static void putCharacter(EntityThing character, Vector3 pos)
-    //{
-
-    //    //  if (mapArray[(int)pos.x, (int)pos.y] == null)
-    //    print("x=" + pos.x + " y=" + pos.y);
+    public static bool putCharacter(EntityThing character, Vector3 newPos, Vector3 oldPos)
+    {
         
-    //    if (pathArray[(int)pos.x, (int)pos.y] == 0)
-    //    {
-    //        //displayPathMap();
-    //        // remove the char from it's position
+        if (mapArray[(int)newPos.x, (int)newPos.y] == null)
+        {
+            mapArray[(int)newPos.x, (int)newPos.y] = character;
+            mapArray[(int)oldPos.x, (int)oldPos.y] = null;
 
-    //       // pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
-    //      //  mapArray[character.x, character.y] = null;
+            character.gameObject.GetComponent<Rigidbody2D>().MovePosition(newPos);
 
-    //        // put him into new position
-    //       // pathArray[(int)pos.x, (int)pos.y] = 1;
-    //        // mapArray[(int)pos.x, (int)pos.y] = character;
-    //        //clearPathFromPath();
-
-    //    }
-        
-      
-    //}
+            return true;
+        }
+        return false;
+    }
 
 
 
 
-    // buld the map
+        // buld the map
     private void MapSetup()
     {
         // init map object

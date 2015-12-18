@@ -70,11 +70,10 @@ public class LevelManager : MonoBehaviour {
 
                 instance.setTarget(friendsSpawned[0]);
 
-                instance.transform.SetParent(enemyHolder.transform);
-                
+                instance.transform.SetParent(enemyHolder.transform);             
                 //MapManager.mapArray[x, y] = instance;
                 MapManager.pathArray[x,y] = '#';
-                LevelManager.enemiesSpawned.Add(instance);
+                enemiesSpawned.Add(instance);
                 spawned = true;
             }
 
@@ -97,16 +96,14 @@ public class LevelManager : MonoBehaviour {
 
     private void createFriend(AFriend friend, Vector2 pos)
     {
-        if (MapManager.pathArray[(int)pos.x,(int) pos.y] == '.')
-        {
-            
+        if (MapManager.mapArray[(int)pos.x, (int)pos.y] == null)
+        {     
             AFriend instance = Instantiate(friend, pos, Quaternion.identity) as AFriend;
 
             instance.transform.SetParent(friendsHolder.transform);
 
-            //MapManager.mapArray[x, y] = instance;
-            MapManager.pathArray[(int)pos.x, (int)pos.y] = 'F';
-            LevelManager.friendsSpawned.Add(instance);
+            MapManager.mapArray[(int)pos.x, (int)pos.y] = instance;
+            friendsSpawned.Add(instance);
             
         }
     }
@@ -123,21 +120,15 @@ public class LevelManager : MonoBehaviour {
         moveBool = true;
     }
 
+
     public void MoveEnemies()
     {
         foreach(AEnemy enemy in enemiesSpawned)
-        {
-            //StartCoroutine(WaitMove(2f));
-            //if (moveBool)
-            //{
-            //    enemy.move();
-            //    moveBool = false;
-            //}
+        {                    
             enemy.move();
-            // print(enemy.transform.position.x);
-            //Wait(1);
-            ///enemy.transform.position = new Vector2(enemy.transform.position.x+1,enemy.transform.position.y);
+            moveBool = false;         
         }
+           StartCoroutine(WaitMove(1f));
     }
 
     public void Update()
@@ -156,7 +147,10 @@ public class LevelManager : MonoBehaviour {
             }
         }
 
-        MoveEnemies();
+        if (moveBool)
+        {
+            MoveEnemies();
+        }
 
     }
 
