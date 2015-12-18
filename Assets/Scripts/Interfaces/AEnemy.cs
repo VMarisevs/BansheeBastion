@@ -41,10 +41,12 @@ public class AEnemy : EntityThing {
    
     private Vector2 getNextStep()
     {
+        if (findPath((int)transform.position.x + 1, (int)transform.position.y))
+            return new Vector2(1, 0);
+
         if (findPath((int)transform.position.x , (int)transform.position.y - 1))
             return new Vector2(0, -1);
-       if (findPath((int)transform.position.x + 1, (int)transform.position.y))
-            return new Vector2(1, 0);
+       
        if (findPath((int)transform.position.x, (int)transform.position.y + 1))
             return new Vector2(0, 1);
        //if (findPath((int)transform.position.x-1, (int)transform.position.y))
@@ -72,10 +74,12 @@ public class AEnemy : EntityThing {
         // 4 mark x,y as part of solution path
         MapManager.pathArray[x, y] = '+';
 
-        if (findPath(x, y -1))
-            return true;
         if (findPath(x + 1, y))
             return true;
+
+        if (findPath(x, y -1))
+            return true;
+       
         if (findPath(x, y + 1))
             return true;
        // if (findPath(x - 1, y ))
