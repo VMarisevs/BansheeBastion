@@ -6,13 +6,15 @@ using UnityEngine;
 public class AEnemy : EntityThing {
 
     public int damage;
-    public int speed;
+    public float speed;
     public bool air;
     public int attack_range;
     public AFriend friendTarget;
+    public bool moveBool = true;
+
     private Vector2 nextStep;
-    //private Rigidbody2D rigibody;
-    bool moveBool = true;
+    
+    
     bool cantMove;
 
 

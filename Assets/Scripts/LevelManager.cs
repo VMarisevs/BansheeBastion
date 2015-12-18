@@ -15,9 +15,9 @@ public class LevelManager : MonoBehaviour {
     private Transform enemyHolder;
     private Transform friendsHolder;
 
-    bool spawnMob = true;
-    bool moveBool = true;
-
+    private bool spawnMob = true;
+    private bool moveBool = true;
+    private float enemySpawnDelay = 2;
 
     public void Start()
     {
@@ -34,18 +34,9 @@ public class LevelManager : MonoBehaviour {
     private void enemySpawner()
     {
         spawnMob = false;
-        if (enemyArray[0] is Slime)
-        {
-            createEnemy(enemyArray[0]);
-           
-            //Slime toInstanciateSlime = (Slime)enemyArray[0];
-            //temp.attack();
-            //GameObject instance = Instantiate(toInstanciateSlime, new Vector2(1, 1), Quaternion.identity) as GameObject;
-            //instance.transform.SetParent(enemyHolder);
-            // Instantiate(enemyArray[0],new Vector2(1,1));
-        }
+        createEnemy(enemyArray[0]);
       
-        StartCoroutine(Wait(2));
+        StartCoroutine(Wait(enemySpawnDelay));
     }
 
 
@@ -108,27 +99,34 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator Wait(int sec)
+    public IEnumerator Wait(float sec)
     {
         yield return new WaitForSeconds(sec);
         spawnMob = true;
     }
 
-    public IEnumerator WaitMove(float sec)
+    public IEnumerator WaitMove(AEnemy enemy)
     {
-        yield return new WaitForSeconds(sec);
-        moveBool = true;
+        print("speed" + enemy.speed + "\ntarget" + enemy.friendTarget);
+        yield return new WaitForSeconds(enemy.speed);
+        enemy.moveBool = true;
     }
+
 
 
     public void MoveEnemies()
     {
-        foreach(AEnemy enemy in enemiesSpawned)
-        {                    
-            enemy.move();
-            moveBool = false;         
+        foreach (AEnemy enemy in enemiesSpawned)
+        {
+            if (enemy.moveBool)
+            {
+                enemy.moveBool = false;
+                enemy.move();
+                StartCoroutine(WaitMove(enemy));
+            }
+
         }
-           StartCoroutine(WaitMove(1f));
+
     }
 
     public void Update()
