@@ -9,34 +9,49 @@ public class AEnemy : EntityThing {
     public int speed;
     public bool air;
     public int attack_range;
-    private AFriend target = new AFriend();
+    private AFriend friendTarget;
     private Vector2 nextStep;
     //private Rigidbody2D rigibody;
+    bool moveBool = true;
 
+    public AEnemy()
+    {
+        changeTarget();
+    }
 
-
-       
     public void move()
     {
-        
-        //print("Char at [8,0] = " + MapManager.pathArray[8, 0]);
-        nextStep = getNextStep();
 
-        if (nextStep != Vector2.zero)
+        //if I am not at the target then move
+        if (!atTheTarget(transform.position.x, transform.position.y))
         {
-            MapManager.displayPathMap();
-            //print("x=" + nextStep.x + " y=" + nextStep.y);
-            //MapManager.pathArray[(int)nextStep.x, (int)nextStep.y] = 1;
-            //MapManager.putCharacter(this, nextStep);
-            //this.run(nextStep);
-            // MapManager.pathArray[oldx, oldy] = 0;
-            //MapManager.displayPathMap();
+            nextStep = getNextStep();
+
+            if (nextStep != Vector2.zero)
+            {
+                //removing my self from map
+                MapManager.pathArray[(int)transform.position.x, (int)transform.position.y] = '.';
+                // placing in a new position to regenerate new path for my self
+                MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = 's';
+
+                this.run(nextStep);
+               
+                // just displaying the path algorithm
+                //MapManager.displayPathMap();
+
+                // clearing the path, otherwise it will do just 1 step
+                MapManager.clearPathFromPath();
+
+            }
+
+            MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
+            nextStep = Vector2.zero;
+
         }
-
-        
-        nextStep = Vector2.zero;
-        
-
+        else
+        {
+            changeTarget();
+        }
     }
    
     private Vector2 getNextStep()
@@ -64,7 +79,8 @@ public class AEnemy : EntityThing {
             return false;
 
         // 2 if (x,y is goal) return true
-        if (x == 10 && y == 4)
+        // close to goal!!!
+        if  (atTheTarget(x,y))            
             return true;
 
         // 3 if (x,y not open) return false
@@ -99,7 +115,68 @@ public class AEnemy : EntityThing {
         rg.MovePosition(this.transform.position + whereToGo);
     }
 
-    
-    
+    private bool atTheTarget(float x, float y)
+    {
+        float targetX = friendTarget.transform.position.x;
+        float targetY = friendTarget.transform.position.y;
+
+        //float targetX = 10;
+        //float targetY = 4;
+
+        if ((x == targetX - 1   && y == targetY     && MapManager.pathArray[(int)targetX - 1, (int)targetY] == '.') ||
+             (x == targetX + 1  && y == targetY     && MapManager.pathArray[(int)targetX + 1, (int)targetY] == '.') ||
+             (x == targetX      && y == targetY + 1 && MapManager.pathArray[(int)targetX, (int)targetY + 1] == '.') ||
+             (x == targetX      && y == targetY - 1 && MapManager.pathArray[(int)targetX, (int)targetY - 1] == '.'))
+            return true;
+        //else
+        //{
+            // switch the target
+            
+        //}
+
+        return false;
+    }
+
+    private void changeTarget()
+    {
+        int index = LevelManager.friendsSpawned.IndexOf(friendTarget);
+       // int indexOrig = LevelManager.friendsSpawned.IndexOf(target);
+        print("Target index:" + index);
+
+        //if (target == null && LevelManager.friendsSpawned.Count > 0)
+        //{
+        //    target = LevelManager.friendsSpawned[0];
+        //}
+        //else 
+
+        // if (LevelManager.friendsSpawned.Count > 1)
+        // {
+        //int index = LevelManager.friendsSpawned.FindIndex(d => d == friendTarget);
+        // int index = LevelManager.friendsSpawned.IndexOf(friendTarget);
+        // print("Target index:" + index);
+        /*
+        if (index < LevelManager.friendsSpawned.Count)
+            target = LevelManager.friendsSpawned[index];
+        else
+            target = LevelManager.friendsSpawned[0];
+            */
+        // }
+    }
+
+    public void setTarget(AFriend target)
+    {
+        friendTarget = target;
+        //int index = LevelManager.friendsSpawned.IndexOf(friendTarget);
+        //int indexOrig = LevelManager.friendsSpawned.IndexOf(target);
+        //print("Target index:" + index + " orig index:" + indexOrig);
+    }
+
+
+    public IEnumerator WaitMove(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+        moveBool = true;
+    }
+
 
 }

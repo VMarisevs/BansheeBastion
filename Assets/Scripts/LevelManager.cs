@@ -7,11 +7,13 @@ public class LevelManager : MonoBehaviour {
 
     // enemy variety
     public AEnemy[] enemyArray;
+    public AFriend[] friendArray;
 
     public static List<AEnemy> enemiesSpawned = new List<AEnemy>();
     public static List<AFriend> friendsSpawned = new List<AFriend>();
 
     private Transform enemyHolder;
+    private Transform friendsHolder;
 
     bool spawnMob = true;
     bool moveBool = true;
@@ -20,7 +22,12 @@ public class LevelManager : MonoBehaviour {
     public void Start()
     {
         enemyHolder = new GameObject("EnemyHolder").transform;
-        createEnemy(enemyArray[0]);
+        friendsHolder = new GameObject("friendsHolder").transform;
+
+        createFriend(friendArray[0], new Vector2(MapManager.xCol - 1, (int)MapManager.yRow / 2));
+
+        createFriend(friendArray[0], new Vector2(MapManager.xCol - 1, (int)MapManager.yRow -1));
+        //print(" friends spawned :" + friendsSpawned.Count);
     }
 
 
@@ -54,17 +61,19 @@ public class LevelManager : MonoBehaviour {
            
             int y = Random.Range(0, MapManager.yRow - 1);
 
-            if (MapManager.mapArray[x, y] == null)
+            if (MapManager.pathArray[x, y] == '.')
             {
             
                 Vector3 pos = new Vector2(x, y);
 
                 AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
 
+                instance.setTarget(friendsSpawned[0]);
+
                 instance.transform.SetParent(enemyHolder.transform);
                 
-                MapManager.mapArray[x, y] = instance;
-                MapManager.pathArray[x,y] = 's';
+                //MapManager.mapArray[x, y] = instance;
+                MapManager.pathArray[x,y] = '#';
                 LevelManager.enemiesSpawned.Add(instance);
                 spawned = true;
             }
@@ -86,7 +95,21 @@ public class LevelManager : MonoBehaviour {
        
     }
 
+    private void createFriend(AFriend friend, Vector2 pos)
+    {
+        if (MapManager.pathArray[(int)pos.x,(int) pos.y] == '.')
+        {
+            
+            AFriend instance = Instantiate(friend, pos, Quaternion.identity) as AFriend;
 
+            instance.transform.SetParent(friendsHolder.transform);
+
+            //MapManager.mapArray[x, y] = instance;
+            MapManager.pathArray[(int)pos.x, (int)pos.y] = 'F';
+            LevelManager.friendsSpawned.Add(instance);
+            
+        }
+    }
 
     public IEnumerator Wait(int sec)
     {
@@ -104,13 +127,13 @@ public class LevelManager : MonoBehaviour {
     {
         foreach(AEnemy enemy in enemiesSpawned)
         {
-            StartCoroutine(WaitMove(1f));
-            if (moveBool)
-            {
-                enemy.move();
-                moveBool = false;
-            }
-
+            //StartCoroutine(WaitMove(2f));
+            //if (moveBool)
+            //{
+            //    enemy.move();
+            //    moveBool = false;
+            //}
+            enemy.move();
             // print(enemy.transform.position.x);
             //Wait(1);
             ///enemy.transform.position = new Vector2(enemy.transform.position.x+1,enemy.transform.position.y);
@@ -124,6 +147,14 @@ public class LevelManager : MonoBehaviour {
         //    enemySpawner();
 
         //}
+        if (enemiesSpawned.Count < 5)
+        {
+            if (spawnMob)
+            {
+                enemySpawner();
+
+            }
+        }
 
         MoveEnemies();
 

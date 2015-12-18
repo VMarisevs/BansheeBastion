@@ -11,7 +11,7 @@ public class MapManager : MonoBehaviour {
     // public object arrays
     public GameObject[] groundTiles;
 
-    public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
+    //public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
     //public static int[,] pathArray = new int[xCol, yRow];
 
     public static char[,] pathArray = new char[xCol, yRow];
@@ -22,29 +22,29 @@ public class MapManager : MonoBehaviour {
 
 
 
-    public static void putCharacter(EntityThing character, Vector3 pos)
-    {
+    //public static void putCharacter(EntityThing character, Vector3 pos)
+    //{
 
-        //  if (mapArray[(int)pos.x, (int)pos.y] == null)
-        print("x=" + pos.x + " y=" + pos.y);
+    //    //  if (mapArray[(int)pos.x, (int)pos.y] == null)
+    //    print("x=" + pos.x + " y=" + pos.y);
         
-        if (pathArray[(int)pos.x, (int)pos.y] == 0)
-        {
-            //displayPathMap();
-            // remove the char from it's position
+    //    if (pathArray[(int)pos.x, (int)pos.y] == 0)
+    //    {
+    //        //displayPathMap();
+    //        // remove the char from it's position
 
-           // pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
-          //  mapArray[character.x, character.y] = null;
+    //       // pathArray[(int)character.transform.position.x, (int)character.transform.position.y] = 0;
+    //      //  mapArray[character.x, character.y] = null;
 
-            // put him into new position
-           // pathArray[(int)pos.x, (int)pos.y] = 1;
-            // mapArray[(int)pos.x, (int)pos.y] = character;
-            //clearPathFromPath();
+    //        // put him into new position
+    //       // pathArray[(int)pos.x, (int)pos.y] = 1;
+    //        // mapArray[(int)pos.x, (int)pos.y] = character;
+    //        //clearPathFromPath();
 
-        }
+    //    }
         
       
-    }
+    //}
 
 
 
@@ -91,13 +91,13 @@ public class MapManager : MonoBehaviour {
                                     {'.','.','.','.','.','.','.','.'}, // 2
                                     {'.','.','.','.','.','.','.','.'}, // 3
                                     {'.','.','.','.','.','.','.','.'}, // 4 
-                                    //{'.','.','.','.','.','.','.','.'}, // 5
-                                    {'#','#','#','#','#','#','.','#'}, // 5
+                                    {'.','.','.','.','.','.','.','.'}, // 5
+                                    //{'#','#','#','#','#','#','.','#'}, // 5
                                     {'.','.','.','.','.','.','.','.'}, // 6
                                     {'.','.','.','.','.','.','.','.'}, // 7
                                     {'.','.','.','.','.','.','.','.'}, // 8
                                     {'.','.','.','.','.','.','.','.'}, // 9
-                                    {'.','.','.','.','D','.','.','.'}, // 10
+                                    {'.','.','.','.','T','.','.','.'}, // 10
                                     {'.','.','.','.','.','.','.','.'}, // 11
                                     {'.','.','.','.','.','.','.','.'}, // 12
                                     {'.','.','.','.','.','.','.','.'}, // 13
@@ -107,20 +107,20 @@ public class MapManager : MonoBehaviour {
         };                                                                                    
     }                                                                                             
 
-    /*
-    private static void clearPathFromPath()
+    
+    public static void clearPathFromPath()
     {
         for (int y = 0; y < yRow; y++)
         {
             for (int x = 0; x < xCol; x++)
             {
-                if (pathArray[x, y] == 2 || pathArray[x, y] == 3)
+                if (pathArray[x, y] == 'x' || pathArray[x, y] == '+')
                 {
-                    pathArray[x, y] = 0;
+                    pathArray[x, y] = '.';
                 }
             }
         }
-    }*/
+    }
 	
     public static void displayPathMap()
     {
