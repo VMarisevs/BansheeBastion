@@ -11,6 +11,7 @@ public class AEnemy : EntityThing {
     public int attack_range;
     public AFriend friendTarget;
     public bool moveBool = true;
+    public bool attackBool = false;
 
     private Vector2 nextStep;
     
@@ -163,7 +164,15 @@ public class AEnemy : EntityThing {
     }
 
 
-   
+    public bool canAttackTarget()
+    {
+        // if target is in the attack range
+        int distance = MapCalc.GetMinCost(
+            new Vector2(transform.position.x, transform.position.y),
+                new Vector2( friendTarget.transform.position.x, friendTarget.transform.position.y));
+        print("distance to target:" + distance);
+        return true;
+     }
 
 
 }

@@ -118,11 +118,17 @@ public class LevelManager : MonoBehaviour {
     {
         foreach (AEnemy enemy in enemiesSpawned)
         {
+            
             if (enemy.moveBool)
             {
                 enemy.moveBool = false;
                 enemy.move();
                 StartCoroutine(WaitMove(enemy));
+
+                if (enemy.canAttackTarget())
+                {
+
+                }
             }
 
         }
@@ -136,7 +142,7 @@ public class LevelManager : MonoBehaviour {
         //    enemySpawner();
 
         //}
-        if (enemiesSpawned.Count < 5)
+        if (enemiesSpawned.Count < 10)
         {
             if (spawnMob)
             {
