@@ -1,17 +1,18 @@
 ﻿
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 using UnityEngine;
 
 public class AEnemy : EntityThing {
 
-    public int damage;
-    public float speed;
-    public bool air;
-    public int attack_range;
-    public AFriend friendTarget;
-    public bool moveBool = true;
-    public bool attackBool = false;
+    public int _maxDamage;
+    public float _speed;
+    public bool _air;
+    public int _attackRange;
+    public AFriend _friendTarget;
+    public bool _moveBool = true;
+    //public bool _attackBool = false;
 
     private Vector2 nextStep;
     
@@ -28,9 +29,11 @@ public class AEnemy : EntityThing {
 
     public void move()
     {
-    
+
         //if I am not at the target then move
-        if (!cantMove && !atTheTarget(transform.position.x, transform.position.y))
+        bool _inTheAttackRange = inTheAttackRange();
+
+        if (!cantMove && !_inTheAttackRange)
         {
             nextStep = getNextStep();
 
@@ -39,8 +42,8 @@ public class AEnemy : EntityThing {
                 this.run(nextStep);
             }
             else
-            {        
-                if(!changeTarget((int)transform.position.x, (int)transform.position.y))
+            {
+                if (!changeTarget((int)transform.position.x, (int)transform.position.y))
                 {
                     cantMove = true;
                 }
@@ -48,6 +51,10 @@ public class AEnemy : EntityThing {
             //  MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
             nextStep = Vector2.zero;
 
+        }
+        else if (_inTheAttackRange) {
+            //attackTheTarget
+            print("Attack the target!!!");
         }
         
     }
@@ -110,12 +117,27 @@ public class AEnemy : EntityThing {
         rg.MovePosition(this.transform.position + whereToGo);
     }
 
+    private bool inTheAttackRange()
+    {
+        int myX = (int)transform.position.x;
+        int myY = (int)transform.position.y;
+        int targetX = (int)_friendTarget.transform.position.x;
+        int targetY = (int)_friendTarget.transform.position.y;
 
+        int distance = MapCalc.GetMinCost(new Vector2(myX, myY), new Vector2(targetX,targetY));
+
+
+        //print("myX:" + myX + " myY" + myY + " targetX:"+ targetX + " targetY:" + targetY + " Distance " + distance);
+        if ( distance <= _attackRange)
+            return true;
+
+        return false;
+    }
     
     private bool atTheTarget(float x, float y)
     {
-        int targetX = (int)friendTarget.transform.position.x;
-        int targetY = (int)friendTarget.transform.position.y;
+        int targetX = (int)_friendTarget.transform.position.x;
+        int targetY = (int)_friendTarget.transform.position.y;
 
         if  ((x == targetX - 1  && y == targetY )   ||
              (x == targetX + 1  && y == targetY )   ||
@@ -138,7 +160,7 @@ public class AEnemy : EntityThing {
             for (int y = 0; y < MapManager.yRow; y++)
             {
                 if(MapManager.mapArray[x,y] is AFriend &&
-                    MapManager.mapArray[x, y] != friendTarget &&
+                    MapManager.mapArray[x, y] != _friendTarget &&
                     Vector2.Distance(new Vector2(x,y),pos ) < closest)
                 {
                     closest = Vector2.Distance(new Vector2(x, y), pos);
@@ -160,19 +182,26 @@ public class AEnemy : EntityThing {
 
     public void setTarget(AFriend target)
     {
-        friendTarget = target;
+        _friendTarget = target;
     }
 
-
-    public bool canAttackTarget()
+    private void attackTarget()
     {
-        // if target is in the attack range
-        int distance = MapCalc.GetMinCost(
-            new Vector2(transform.position.x, transform.position.y),
-                new Vector2( friendTarget.transform.position.x, friendTarget.transform.position.y));
-        print("distance to target:" + distance);
-        return true;
-     }
+        if (_friendTarget != null)
+        {
+            int damage = Random.Range(0, _maxDamage);
+            //
+        }
+    }
+
+    //public int attackDistance()
+    //{
+    //    // if target is in the attack range
+    //    int distance = MapCalc.GetMinCost(
+    //        new Vector2(transform.position.x, transform.position.y),
+    //            new Vector2( friendTarget.transform.position.x, friendTarget.transform.position.y));
+    //    return distance;
+    // }
 
 
 }

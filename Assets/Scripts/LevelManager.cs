@@ -16,7 +16,7 @@ public class LevelManager : MonoBehaviour {
     private Transform friendsHolder;
 
     private bool spawnMob = true;
-    private bool moveBool = true;
+    //private bool moveBool = true;
     private float enemySpawnDelay = 2;
 
     public void Start()
@@ -107,9 +107,9 @@ public class LevelManager : MonoBehaviour {
 
     public IEnumerator WaitMove(AEnemy enemy)
     {
-        print("speed" + enemy.speed + "\ntarget" + enemy.friendTarget);
-        yield return new WaitForSeconds(enemy.speed);
-        enemy.moveBool = true;
+        //print("speed" + enemy.speed + "\ntarget" + enemy.friendTarget);
+        yield return new WaitForSeconds(enemy._speed);
+        enemy._moveBool = true;
     }
 
 
@@ -119,16 +119,14 @@ public class LevelManager : MonoBehaviour {
         foreach (AEnemy enemy in enemiesSpawned)
         {
             
-            if (enemy.moveBool)
+            if (enemy._moveBool)
             {
-                enemy.moveBool = false;
+                enemy._moveBool = false;
                 enemy.move();
+                
                 StartCoroutine(WaitMove(enemy));
 
-                if (enemy.canAttackTarget())
-                {
-
-                }
+                
             }
 
         }
@@ -151,10 +149,10 @@ public class LevelManager : MonoBehaviour {
             }
         }
 
-        if (moveBool)
-        {
+        //if (moveBool)
+        //{
             MoveEnemies();
-        }
+        //}
 
     }
 
