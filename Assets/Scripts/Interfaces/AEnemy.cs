@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using UnityEngine;
+using System;
 
 public class AEnemy : EntityThing {
 
@@ -198,7 +199,7 @@ public class AEnemy : EntityThing {
         // if there is atleast 1 friend, then checking and returning index
         if (!(LevelManager.friendsSpawned.Count < 1))
         {
-            print("trying to change target");
+            //print("trying to change target");
             // looking for best target
             for (int i = 0; i < LevelManager.friendsSpawned.Count; i++)
             {
@@ -218,7 +219,15 @@ public class AEnemy : EntityThing {
                 }
             }
 
-            _friendTarget = LevelManager.friendsSpawned[bestTarget];
+            // better to add try catch, cause some of the enemies might try to swap into unexisting char
+            try
+            {
+                _friendTarget = LevelManager.friendsSpawned[bestTarget];
+            } catch (Exception e)
+            {
+                print("ERROR!" + e.StackTrace);
+            }
+            
 
             return true;
         }

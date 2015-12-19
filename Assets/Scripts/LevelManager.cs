@@ -59,8 +59,6 @@ public class LevelManager : MonoBehaviour {
 
                 AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
 
-                instance.setTarget(friendsSpawned[0]);
-
                 instance.transform.SetParent(enemyHolder.transform);             
                 //MapManager.mapArray[x, y] = instance;
                 MapManager.pathArray[x,y] = '#';
