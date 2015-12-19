@@ -9,5 +9,6 @@ public abstract class EntityThing : MonoBehaviour {
     public int _health;
     public int _armour;
 
+    
 
 }

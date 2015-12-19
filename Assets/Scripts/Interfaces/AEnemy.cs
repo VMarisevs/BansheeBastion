@@ -20,42 +20,66 @@ public class AEnemy : EntityThing {
     bool cantMove;
 
 
-    public void Start()
-    {
-        changeTarget((int)transform.position.x, (int)transform.position.y);
-    }
+    //public void Start()
+    //{
+    //   // changeTarget((int)transform.position.x, (int)transform.position.y);
+    //}
 
 
 
     public void move()
     {
-
-        //if I am not at the target then move
-        bool _inTheAttackRange = inTheAttackRange();
-
-        if (!cantMove && !_inTheAttackRange)
+        bool _haveAtarget = haveATarget();
+        //print("do I have a target" + _haveAtarget);
+        if (_haveAtarget)
         {
-            nextStep = getNextStep();
+            bool _inTheAttackRange = inTheAttackRange();
 
-            if (nextStep != Vector2.zero)
+            // move to a target
+            if (!_inTheAttackRange)
             {
-                this.run(nextStep);
-            }
-            else
-            {
-                if (!changeTarget((int)transform.position.x, (int)transform.position.y))
+                nextStep = getNextStep();
+
+                if (nextStep != Vector2.zero)
                 {
-                    cantMove = true;
+                    this.run(nextStep);
                 }
             }
-            //  MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
-            nextStep = Vector2.zero;
+            // attack the target if close
+            else if (_inTheAttackRange)
+            {
+                attackTarget();
+            }
+        }
 
-        }
-        else if (_inTheAttackRange) {
-            //attackTheTarget
-            print("Attack the target!!!");
-        }
+       //     //if I am not at the target then move
+       //    // bool _inTheAttackRange = inTheAttackRange();
+
+       //// print("in the range: " + _inTheAttackRange);
+       // if (haveATarget() && !_inTheAttackRange)
+       // {
+       //     nextStep = getNextStep();
+
+       //     if (nextStep != Vector2.zero)
+       //     {
+       //         this.run(nextStep);
+       //     }
+       //     //else
+       //     //{
+       //     //    if (!changeTarget((int)transform.position.x, (int)transform.position.y))
+       //     //    {
+       //     //        cantMove = true;
+       //     //    }
+       //     //}
+       //     //  MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
+       //     nextStep = Vector2.zero;
+
+       // }
+       // else if (_inTheAttackRange) {
+       //     //attackTheTarget
+       //     //print("Attack the target!!!");
+       //     attackTarget();
+       // }
         
     }
 
@@ -148,36 +172,60 @@ public class AEnemy : EntityThing {
         return false;
     }
 
-    private bool changeTarget(int posX,int posY)
+    private bool haveATarget()
     {
-        float closest = 100;
-    
+        bool result = false;
 
-        Vector2 pos = new Vector2(posX,posY);
-        AFriend bestTarget = null;
-        for (int x = posX; x < MapManager.xCol; x++)       
+        if (LevelManager.friendsSpawned.Contains(_friendTarget))
         {
-            for (int y = 0; y < MapManager.yRow; y++)
-            {
-                if(MapManager.mapArray[x,y] is AFriend &&
-                    MapManager.mapArray[x, y] != _friendTarget &&
-                    Vector2.Distance(new Vector2(x,y),pos ) < closest)
-                {
-                    closest = Vector2.Distance(new Vector2(x, y), pos);
-                    bestTarget = (AFriend)MapManager.mapArray[x, y];
-                }
-            }
-        }
-
-        if (bestTarget != null)
-        {
-            setTarget(bestTarget);
             return true;
         }
-        return false;
+
+        result = changeTarget();
+        
+
+        return result;
+    }
+
+    private bool changeTarget()
+    {
+        int bestTarget = -1; // means no target
+        int bestScore = 1000;
+        int myX = (int)transform.position.x;
+        int myY = (int)transform.position.y;
+        Vector2 myPosition = new Vector2(myX, myY);
+
+        // if there is atleast 1 friend, then checking and returning index
+        if (!(LevelManager.friendsSpawned.Count < 1))
+        {
+            print("trying to change target");
+            // looking for best target
+            for (int i = 0; i < LevelManager.friendsSpawned.Count; i++)
+            {
+
+                AFriend potentialTarget = LevelManager.friendsSpawned[i];
+
+                Vector2 potentialTargetPosition = new Vector2(
+                                                                (int)potentialTarget.transform.position.x,
+                                                                    (int)potentialTarget.transform.position.y);
+
+                int score = MapCalc.GetMinCost(myPosition, potentialTargetPosition);
+
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = i;
+                }
+            }
+
+            _friendTarget = LevelManager.friendsSpawned[bestTarget];
+
+            return true;
+        }
             
 
-
+       
+        return false;
     }
 
     public void setTarget(AFriend target)
@@ -190,7 +238,7 @@ public class AEnemy : EntityThing {
         if (_friendTarget != null)
         {
             int damage = Random.Range(0, _maxDamage);
-            //
+            _friendTarget.hit(damage);
         }
     }
 
