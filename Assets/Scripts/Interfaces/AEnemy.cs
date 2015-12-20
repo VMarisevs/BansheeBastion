@@ -210,6 +210,8 @@ public class AEnemy : EntityThing {
     public void hit(int damage)
     {
         _health -= damage;
+        // add points to player
+        Score.addScore(damage);
 
         if (_health <= 0)
         {

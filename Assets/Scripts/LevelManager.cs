@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour {
     public static List<AEnemy> enemiesSpawned = new List<AEnemy>();
     public static List<AFriend> friendsSpawned = new List<AFriend>();
 
+   
+
     // just to make it clean
     private Transform enemyHolder;
     private Transform friendsHolder;
@@ -22,6 +24,7 @@ public class LevelManager : MonoBehaviour {
 
     public void Start()
     {
+        
         enemyHolder = new GameObject("EnemyHolder").transform;
         friendsHolder = new GameObject("friendsHolder").transform;
 
@@ -29,18 +32,6 @@ public class LevelManager : MonoBehaviour {
 
         createFriend(friendArray[0], new Vector2(MapManager.xCol - 1, (int)MapManager.yRow -1));
         //print(" friends spawned :" + friendsSpawned.Count);
-    }
-
-
-    private void enemySpawner()
-    {
-        if (enemySpawnMob)
-        {
-            enemySpawnMob = false;
-            createEnemy(enemyArray[0]);
-            StartCoroutine(spawnWait(enemySpawnDelay));
-            
-        }
     }
     
     private void createEnemy(AEnemy enemy)
@@ -103,7 +94,13 @@ public class LevelManager : MonoBehaviour {
 
     private void SpawnEnemies()
     {
-        enemySpawner();
+        if (enemySpawnMob)
+        {
+            enemySpawnMob = false;
+            createEnemy(enemyArray[0]);
+            StartCoroutine(spawnWait(enemySpawnDelay));
+            
+        }
     }
 
     private void MoveEnemies()
