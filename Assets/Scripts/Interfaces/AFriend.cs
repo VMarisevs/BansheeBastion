@@ -12,11 +12,11 @@ public class AFriend : EntityThing {
 
         _health -= damage;
 
-        print("I've been attack. by " + damage + " my health: " + _health);
+        //print("I've been attack. by " + damage + " my health: " + _health);
 
         if (_health <= 0)
         {
-            print("I am dead!");
+           // print("I am dead!");
             LevelManager.friendsSpawned.Remove(this);
             Object.Destroy(this.gameObject);
         }
