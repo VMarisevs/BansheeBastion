@@ -9,6 +9,8 @@ public abstract class EntityThing : MonoBehaviour {
     public int _health;
     public int _maxHealth;
     public int _armour;
+    public float _speed;
+    public bool _action = true;
 
     private float healthBarLength;
     private float maxHealthBarLength;

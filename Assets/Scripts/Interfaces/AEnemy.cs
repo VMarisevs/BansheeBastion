@@ -8,25 +8,12 @@ using System;
 public class AEnemy : EntityThing {
 
     public int _maxDamage;
-    public float _speed;
     public bool _air;
     public int _attackRange;
+	
     public AFriend _friendTarget;
-    public bool _moveBool = true;
-    //public bool _attackBool = false;
 
     private Vector2 nextStep;
-    
-    
-    bool cantMove;
-
-
-    //public void Start()
-    //{
-    //   // changeTarget((int)transform.position.x, (int)transform.position.y);
-    //}
-
-
 
     public void move()
     {
@@ -52,35 +39,6 @@ public class AEnemy : EntityThing {
                 attackTarget();
             }
         }
-
-       //     //if I am not at the target then move
-       //    // bool _inTheAttackRange = inTheAttackRange();
-
-       //// print("in the range: " + _inTheAttackRange);
-       // if (haveATarget() && !_inTheAttackRange)
-       // {
-       //     nextStep = getNextStep();
-
-       //     if (nextStep != Vector2.zero)
-       //     {
-       //         this.run(nextStep);
-       //     }
-       //     //else
-       //     //{
-       //     //    if (!changeTarget((int)transform.position.x, (int)transform.position.y))
-       //     //    {
-       //     //        cantMove = true;
-       //     //    }
-       //     //}
-       //     //  MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
-       //     nextStep = Vector2.zero;
-
-       // }
-       // else if (_inTheAttackRange) {
-       //     //attackTheTarget
-       //     //print("Attack the target!!!");
-       //     attackTarget();
-       // }
         
     }
 
@@ -97,9 +55,6 @@ public class AEnemy : EntityThing {
 
         if (findPath(x, y + 1, y))
             return new Vector2(0, 1);
-
-        //if (findPath((int)transform.position.x-1, (int)transform.position.y))
-
 
         return Vector2.zero;
 
@@ -134,9 +89,8 @@ public class AEnemy : EntityThing {
 
     public void run(Vector3 whereToGo)
     {     
-        //print("*WhereToGo in Run() x=" + whereToGo.x + " y=" + whereToGo.y +"");
+        
         Rigidbody2D rg = gameObject.GetComponent<Rigidbody2D>();
-        //rg.MovePosition(whereToGo);
 
         MapManager.putCharacter(this, transform.position + whereToGo , transform.position);
         rg.MovePosition(this.transform.position + whereToGo);
@@ -150,7 +104,6 @@ public class AEnemy : EntityThing {
         int targetY = (int)_friendTarget.transform.position.y;
 
         int distance = MapCalc.GetMinCost(new Vector2(myX, myY), new Vector2(targetX,targetY));
-
 
         //print("myX:" + myX + " myY" + myY + " targetX:"+ targetX + " targetY:" + targetY + " Distance " + distance);
         if ( distance <= _attackRange)
@@ -251,14 +204,19 @@ public class AEnemy : EntityThing {
         }
     }
 
-    //public int attackDistance()
-    //{
-    //    // if target is in the attack range
-    //    int distance = MapCalc.GetMinCost(
-    //        new Vector2(transform.position.x, transform.position.y),
-    //            new Vector2( friendTarget.transform.position.x, friendTarget.transform.position.y));
-    //    return distance;
-    // }
+/*
+    public methods
+*/    
+    public void hit(int damage)
+    {
+        _health -= damage;
 
-
+        if (_health <= 0)
+        {
+            // print("I am dead!");
+            LevelManager.enemiesSpawned.Remove(this);
+            UnityEngine.Object.Destroy(this.gameObject);
+        }
+    }
+    
 }

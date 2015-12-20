@@ -9,14 +9,15 @@ public class LevelManager : MonoBehaviour {
     public AEnemy[] enemyArray;
     public AFriend[] friendArray;
 
+    // actual enemies
     public static List<AEnemy> enemiesSpawned = new List<AEnemy>();
     public static List<AFriend> friendsSpawned = new List<AFriend>();
 
+    // just to make it clean
     private Transform enemyHolder;
     private Transform friendsHolder;
 
-    private bool spawnMob = true;
-    //private bool moveBool = true;
+    private bool enemySpawnMob = true;
     private float enemySpawnDelay = 2;
 
     public void Start()
@@ -33,13 +34,15 @@ public class LevelManager : MonoBehaviour {
 
     private void enemySpawner()
     {
-        spawnMob = false;
-        createEnemy(enemyArray[0]);
-      
-        StartCoroutine(Wait(enemySpawnDelay));
+        if (enemySpawnMob)
+        {
+            enemySpawnMob = false;
+            createEnemy(enemyArray[0]);
+            StartCoroutine(spawnWait(enemySpawnDelay));
+            
+        }
     }
-
-
+    
     private void createEnemy(AEnemy enemy)
     {
         bool spawned = false;
@@ -59,8 +62,8 @@ public class LevelManager : MonoBehaviour {
 
                 AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
 
-                instance.transform.SetParent(enemyHolder.transform);             
-                //MapManager.mapArray[x, y] = instance;
+                instance.transform.SetParent(enemyHolder.transform); 
+
                 MapManager.pathArray[x,y] = '#';
                 enemiesSpawned.Add(instance);
                 spawned = true;
@@ -69,19 +72,19 @@ public class LevelManager : MonoBehaviour {
             if (counter > MapManager.yRow)
             {
                 spawned = true;
-                //spawnMob = false;
             }
             counter++;
  
         }
-        
-
-       
-
-        //MapManager.putCharacter(instance, pos);
-
        
     }
+
+    private IEnumerator spawnWait(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+        enemySpawnMob = true;
+    }
+
 
     private void createFriend(AFriend friend, Vector2 pos)
     {
@@ -97,33 +100,23 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator Wait(float sec)
+
+    private void SpawnEnemies()
     {
-        yield return new WaitForSeconds(sec);
-        spawnMob = true;
+        enemySpawner();
     }
 
-    public IEnumerator WaitMove(AEnemy enemy)
-    {
-        //print("speed" + enemy.speed + "\ntarget" + enemy.friendTarget);
-        yield return new WaitForSeconds(enemy._speed);
-        enemy._moveBool = true;
-    }
-
-
-
-    public void MoveEnemies()
+    private void MoveEnemies()
     {
         foreach (AEnemy enemy in enemiesSpawned)
         {
             
-            if (enemy._moveBool)
+            if (enemy._action)
             {
-                enemy._moveBool = false;
+                enemy._action = false;
                 enemy.move();
                 
-                StartCoroutine(WaitMove(enemy));
-
+                StartCoroutine(waitAction(enemy));
                 
             }
 
@@ -131,26 +124,34 @@ public class LevelManager : MonoBehaviour {
 
     }
 
-    public void Update()
+    private void FriendsAttack()
     {
-        //if (spawnMob)
-        //{
-        //    enemySpawner();
-
-        //}
-        if (enemiesSpawned.Count < 10)
+        foreach (AFriend friend in friendsSpawned)
         {
-            if (spawnMob)
+            if (friend._action)
             {
-                enemySpawner();
-
+                friend._action = false;
+                friend.attack();
+                StartCoroutine(waitAction(friend));
             }
         }
+    }
 
-        //if (moveBool)
-        //{
-            MoveEnemies();
-        //}
+
+    private IEnumerator waitAction(EntityThing entity)
+    {
+        yield return new WaitForSeconds(entity._speed);
+        entity._action = true;
+    }
+
+    // default actions
+    public void Update()
+    {
+ 
+        SpawnEnemies();
+        MoveEnemies();
+
+        FriendsAttack();
 
     }
 
