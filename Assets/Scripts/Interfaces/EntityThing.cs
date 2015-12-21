@@ -6,6 +6,7 @@ public abstract class EntityThing : MonoBehaviour {
     protected LayerMask blockingLayer;
     protected BoxCollider2D boxCollider2D;
 
+    public string _name;
     public int _health;
     public int _maxHealth;
     public int _armour;

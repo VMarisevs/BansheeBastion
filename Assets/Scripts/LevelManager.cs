@@ -24,7 +24,7 @@ public class LevelManager : MonoBehaviour {
 
     public void Start()
     {
-        
+
         enemyHolder = new GameObject("EnemyHolder").transform;
         friendsHolder = new GameObject("friendsHolder").transform;
 

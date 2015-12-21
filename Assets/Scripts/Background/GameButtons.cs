@@ -20,7 +20,7 @@ public class GameButtons : MonoBehaviour {
 
         if (GUI.Button(mp.getStoreButton(), "Store", mp.getButtonStyle()))
         {
-            Score.addScore(100);
+            Store.showStore();
         }
 
         if (GUI.Button(mp.getCheatButton(), "Cheat", mp.getButtonStyle()))
