@@ -9,22 +9,22 @@ public class LevelManager : MonoBehaviour {
     public AEnemy[] enemyArray;
     public AFriend[] friendArray;
 
-    
-
+    // actual enemies
     public static List<AEnemy> enemiesSpawned = new List<AEnemy>();
-    //public static List<bool> moveEnemy = new List<bool>();
-
     public static List<AFriend> friendsSpawned = new List<AFriend>();
 
+   
+
+    // just to make it clean
     private Transform enemyHolder;
     private Transform friendsHolder;
 
-    bool spawnMob = true;
-    bool moveBool = true;
-
+    private bool enemySpawnMob = true;
+    private float enemySpawnDelay = 2;
 
     public void Start()
     {
+
         enemyHolder = new GameObject("EnemyHolder").transform;
         friendsHolder = new GameObject("friendsHolder").transform;
 
@@ -33,26 +33,7 @@ public class LevelManager : MonoBehaviour {
         createFriend(friendArray[0], new Vector2(MapManager.xCol - 1, (int)MapManager.yRow -1));
         //print(" friends spawned :" + friendsSpawned.Count);
     }
-
-
-    private void enemySpawner()
-    {
-        spawnMob = false;
-        //if (enemyArray[0] is Slime)
-        //{
-            createEnemy(enemyArray[0]);
-           
-            //Slime toInstanciateSlime = (Slime)enemyArray[0];
-            //temp.attack();
-            //GameObject instance = Instantiate(toInstanciateSlime, new Vector2(1, 1), Quaternion.identity) as GameObject;
-            //instance.transform.SetParent(enemyHolder);
-            // Instantiate(enemyArray[0],new Vector2(1,1));
-        //}
-      
-        StartCoroutine(Wait(2));
-    }
-
-
+    
     private void createEnemy(AEnemy enemy)
     {
         bool spawned = false;
@@ -72,10 +53,8 @@ public class LevelManager : MonoBehaviour {
 
                 AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
 
-                instance.setTarget(friendsSpawned[0]);
+                instance.transform.SetParent(enemyHolder.transform); 
 
-                instance.transform.SetParent(enemyHolder.transform);             
-                //MapManager.mapArray[x, y] = instance;
                 MapManager.pathArray[x,y] = '#';
                 enemiesSpawned.Add(instance);
                 spawned = true;
@@ -84,19 +63,19 @@ public class LevelManager : MonoBehaviour {
             if (counter > MapManager.yRow)
             {
                 spawned = true;
-                //spawnMob = false;
             }
             counter++;
  
         }
-        
-
-       
-
-        //MapManager.putCharacter(instance, pos);
-
        
     }
+
+    private IEnumerator spawnWait(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+        enemySpawnMob = true;
+    }
+
 
     private void createFriend(AFriend friend, Vector2 pos)
     {
@@ -112,55 +91,64 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator Wait(int sec)
+
+    private void SpawnEnemies()
     {
-        yield return new WaitForSeconds(sec);
-        spawnMob = true;
-    }
-
-    public IEnumerator WaitMove(AEnemy enemy)
-    {
-  
-        print("speed" + enemy.speed + "\ntarget" + enemy.friendTarget);
-        yield return new WaitForSeconds(enemy.speed);
-        enemy._move = true;
-    }
-
-
-    public void MoveEnemies()
-    {  
-        foreach (AEnemy enemy in enemiesSpawned)
-        {   
-            if (enemy._move)
-            {
-                enemy._move = false;
-                enemy.move();
-                StartCoroutine(WaitMove(enemy));
-            }
-           
+        if (enemySpawnMob)
+        {
+            enemySpawnMob = false;
+            createEnemy(enemyArray[0]);
+            StartCoroutine(spawnWait(enemySpawnDelay));
+            
         }
-          
     }
 
+    private void MoveEnemies()
+    {
+        foreach (AEnemy enemy in enemiesSpawned)
+        {
+            
+            if (enemy._action)
+            {
+                enemy._action = false;
+                enemy.move();
+                
+                StartCoroutine(waitAction(enemy));
+                
+            }
+
+        }
+
+    }
+
+    private void FriendsAttack()
+    {
+        foreach (AFriend friend in friendsSpawned)
+        {
+            if (friend._action)
+            {
+                friend._action = false;
+                friend.attack();
+                StartCoroutine(waitAction(friend));
+            }
+        }
+    }
+
+
+    private IEnumerator waitAction(EntityThing entity)
+    {
+        yield return new WaitForSeconds(entity._speed);
+        entity._action = true;
+    }
+
+    // default actions
     public void Update()
     {
-        //if (spawnMob)
-        //{
-        //    enemySpawner();
-
-        //}
-        if (enemiesSpawned.Count < 1)
-        {
-            if (spawnMob)
-            {
-                enemySpawner();
-
-            }
-        }
-
-        
+ 
+        SpawnEnemies();
         MoveEnemies();
-        
+
+        FriendsAttack();
 
     }
 

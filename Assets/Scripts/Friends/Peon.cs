@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class King : AFriend {
+public class Peon : AFriend {
 
 }

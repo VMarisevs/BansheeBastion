@@ -1,208 +1,121 @@
 ﻿
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 using UnityEngine;
+using System;
 
 public class AEnemy : EntityThing {
 
-    public int damage;
-    public float speed;
-    public bool _move = true;
-    public bool air;
-    public int attack_range;
-    public AFriend friendTarget;
-    private int targetX, targetY;
+    public int _maxDamage;
+    public bool _air;
+    public int _attackRange;
+	
+    public AFriend _friendTarget;
+
     private Vector2 nextStep;
-    //private Rigidbody2D rigibody;
-    bool moveBool = true;
-    bool cantMove;
-
-    public int minCost;
-
-    public void Start()
-    {
-        changeTarget((int)transform.position.x, (int)transform.position.y);
-    }
-
-    public int GetMinCost(int aX, int aY, int bX, int bY)
-    {
-        return Mathf.Abs(aX - bX) + Mathf.Abs(aY - bY);
-    }
-
-    private int[] findDirection(int aX, int aY, int bX, int bY)
-    {
-
-        int[] result = new int[2];
-
-
-        return result;
-
-    }
 
     public void move()
     {
-    
-        //if I am not at the target then move
-        if (!cantMove && !atTheTarget(transform.position.x, transform.position.y))
-        //if (!atTheTarget(transform.position.x, transform.position.y))
+        bool _haveAtarget = haveATarget();
+        //print("do I have a target" + _haveAtarget);
+        if (_haveAtarget)
         {
-            nextStep = getNextStep();
+            bool _inTheAttackRange = inTheAttackRange();
 
-            if (nextStep != Vector2.zero)
+            // move to a target
+            if (!_inTheAttackRange)
             {
-                this.run(nextStep);
-            }
-           
-            else if(!changeTarget((int)transform.position.x, (int)transform.position.y))
-            {
-                cantMove = true;
-            }
-            
-            //  MapManager.pathArray[(int)transform.position.x + (int)nextStep.x, (int)transform.position.y + (int)nextStep.y] = '#';
-            nextStep = Vector2.zero;
+                nextStep = getNextStep();
 
+                if (nextStep != Vector2.zero)
+                {
+                    this.run(nextStep);
+                }
+            }
+            // attack the target if close
+            else if (_inTheAttackRange)
+            {
+                attackTarget();
+            }
         }
         
     }
-
- 
 
     private Vector2 getNextStep()
     {
         int x = (int)transform.position.x;
         int y = (int)transform.position.y;
 
-        int cost1, cost2, cost3;
+        if (findPath(x + 1, y, y))
+            return new Vector2(1, 0);
 
-        minCost = GetMinCost(x, y, (int)friendTarget.transform.position.x, (int)friendTarget.transform.position.y);
-        print(minCost);
+        if (findPath(x, y - 1, y))
+            return new Vector2(0, -1);
 
-        cost1 = findPath(x + 1, y, y, 0);
-
-        cost2 = findPath(x, y - 1, y, 0);
-
-        cost3 = findPath(x, y + 1, y, 0);
-
-        if (cost1 > 0 || cost2 > 0 || cost3 > 0)
-        {
-            if (cost1 > cost2)
-            {
-                if (cost3 > cost2)
-                    return new Vector2(0, -1);//cost2;
-                else
-                    return new Vector2(0, 1); //cost3
-            }
-            else if (cost1 > cost3)
-                return new Vector2(0, 1);// cost3
-            else
-                return new Vector2(1, 0);// cost1
-        }
-            
-
-        //if (findPath(x + 1, y, y))
-        //    return new Vector2(1, 0);
-
-        //if (findPath(x, y - 1, y))
-        //    return new Vector2(0, -1);
-
-        //if (findPath(x, y + 1, y))
-        //    return new Vector2(0, 1);
-
-        //if (findPath((int)transform.position.x-1, (int)transform.position.y))
-
+        if (findPath(x, y + 1, y))
+            return new Vector2(0, 1);
 
         return Vector2.zero;
 
     }
 
-
-
-    private int findPath(int x, int y, int oldY, int cost)
+    private bool findPath(int x, int y, int oldY)
     {
 
-
-        //if (Mathf.Abs(aX - bX) != 0 && Mathf.Abs(aY - bY) != 0)
-        //{
-        //    if (Random.value >= 0.5)
-        //    {
-        //        result[0] = 1;
-        //    }
-        //    else
-        //    {
-        //        if (aY < bY)
-        //        {
-        //            result[1] = 1;
-
-
-        //        }
-        //        else
-        //        {
-        //            result[1] = -1;
-        //        }
-
-        //    }
-        //}
-
-
-        int newCost;
-        int testCost;
-
+        // 1 if (x,y outside maze) return false
         if (x < 0 || x >= MapManager.xCol || y < 0 || y >= MapManager.yRow)
-            return 1000;
+            return false;
 
-        if (MapManager.mapArray[x, y] is AEnemy)
-            return 1000;
-
-        if (MapManager.mapArray[x, y] == null)
-            cost ++;
-
-        if (MapManager.mapArray[x, y] is AFriend)
-            cost+=3;
-
+        if (MapManager.mapArray[x, y] != null)          
+            return false;
+       
         // close to goal!!!
         if (atTheTarget(x, y))
-            return cost;
+            return true;
 
-        newCost = findPath(x + 1, y, y, cost);
-        if (newCost == minCost) return newCost;
+        if (findPath(x + 1, y, y))
+            return true;
 
-        if (y - 1 != oldY)
-        {
-            testCost = findPath(x, y - 1, y, cost);
-            if (testCost == minCost) return testCost;
-            newCost = (newCost < testCost) ? newCost : testCost;
-        }
+        if (y - 1 != oldY && findPath(x, y - 1,  y))
+            return true;
+
+        if (y + 1 != oldY && findPath(x, y + 1, y))
+            return true;
 
 
-        if (y + 1 != oldY)
-        {
-            testCost = findPath(x, y + 1, y, cost);
-            if (testCost == minCost) return testCost;
-            newCost = (newCost < testCost) ? newCost : testCost;
-        }
-
-        return  cost;
+        return false;
     }
 
     public void run(Vector3 whereToGo)
-    {
-        /*
-        To be removed
-            //print("*WhereToGo in Run() x=" + whereToGo.x + " y=" + whereToGo.y +"");
-            // Rigidbody2D rg = gameObject.GetComponent<Rigidbody2D>();
-            //rg.MovePosition(whereToGo);
-            // rg.MovePosition(this.transform.position + whereToGo);
-        */
-        MapManager.putCharacter(this, transform.position + whereToGo, transform.position);
-       
+    {     
+        
+        Rigidbody2D rg = gameObject.GetComponent<Rigidbody2D>();
+
+        MapManager.putCharacter(this, transform.position + whereToGo , transform.position);
+        rg.MovePosition(this.transform.position + whereToGo);
     }
 
+    private bool inTheAttackRange()
+    {
+        int myX = (int)transform.position.x;
+        int myY = (int)transform.position.y;
+        int targetX = (int)_friendTarget.transform.position.x;
+        int targetY = (int)_friendTarget.transform.position.y;
 
+        int distance = MapCalc.GetMinCost(new Vector2(myX, myY), new Vector2(targetX,targetY));
 
+        //print("myX:" + myX + " myY" + myY + " targetX:"+ targetX + " targetY:" + targetY + " Distance " + distance);
+        if ( distance <= _attackRange)
+            return true;
+
+        return false;
+    }
+    
     private bool atTheTarget(float x, float y)
     {
-        int targetX = (int)friendTarget.transform.position.x;
-        int targetY = (int)friendTarget.transform.position.y;
+        int targetX = (int)_friendTarget.transform.position.x;
+        int targetY = (int)_friendTarget.transform.position.y;
 
         if  ((x == targetX - 1  && y == targetY )   ||
              (x == targetX + 1  && y == targetY )   ||
@@ -213,56 +126,99 @@ public class AEnemy : EntityThing {
         return false;
     }
 
-    private bool changeTarget(int posX,int posY)
+    private bool haveATarget()
     {
+        bool result = false;
 
-
-        //float closest = 100;
-    
-
-        Vector2 pos = new Vector2(posX,posY);
-
-
-        AFriend bestTarget = null;
-
-
-        for (int x = posX; x < MapManager.xCol; x++)       
+        if (LevelManager.friendsSpawned.Contains(_friendTarget))
         {
-            for (int y = 0; y < MapManager.yRow; y++)
-            {
-
-                if(MapManager.mapArray[x,y] is AFriend &&
-                    MapManager.mapArray[x, y] != friendTarget)
-                    //&& Vector2.Distance(new Vector2(x,y),pos ) < closest)
-                {
-                   // closest = Vector2.Distance(new Vector2(x, y), pos);
-                    bestTarget = (AFriend)MapManager.mapArray[x, y];
-                }
-            }
-        }
-
-        if (bestTarget != null)
-        {
-            setTarget(bestTarget);
             return true;
         }
 
+        result = changeTarget();
+        
 
-        return false;
+        return result;
+    }
+
+    private bool changeTarget()
+    {
+        int bestTarget = -1; // means no target
+        int bestScore = 1000;
+        int myX = (int)transform.position.x;
+        int myY = (int)transform.position.y;
+        Vector2 myPosition = new Vector2(myX, myY);
+
+        // if there is atleast 1 friend, then checking and returning index
+        if (!(LevelManager.friendsSpawned.Count < 1))
+        {
+            //print("trying to change target");
+            // looking for best target
+            for (int i = 0; i < LevelManager.friendsSpawned.Count; i++)
+            {
+
+                AFriend potentialTarget = LevelManager.friendsSpawned[i];
+
+                Vector2 potentialTargetPosition = new Vector2(
+                                                                (int)potentialTarget.transform.position.x,
+                                                                    (int)potentialTarget.transform.position.y);
+
+                int score = MapCalc.GetMinCost(myPosition, potentialTargetPosition);
+
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = i;
+                }
+            }
+
+            // better to add try catch, cause some of the enemies might try to swap into unexisting char
+            try
+            {
+                _friendTarget = LevelManager.friendsSpawned[bestTarget];
+            } catch (Exception e)
+            {
+                print("ERROR!" + e.StackTrace);
+            }
             
 
+            return true;
+        }
+            
 
+       
+        return false;
     }
 
     public void setTarget(AFriend target)
     {
-        friendTarget = target;
-        targetX = (int)target.transform.position.x;
-        targetY = (int)target.transform.position.y;
+        _friendTarget = target;
     }
 
+    private void attackTarget()
+    {
+        if (_friendTarget != null)
+        {
+            int damage = Random.Range(0, _maxDamage);
+            _friendTarget.hit(damage);
+        }
+    }
 
-   
+/*
+    public methods
+*/    
+    public void hit(int damage)
+    {
+        _health -= damage;
+        // add points to player
+        Score.addScore(damage);
 
-
+        if (_health <= 0)
+        {
+            // print("I am dead!");
+            LevelManager.enemiesSpawned.Remove(this);
+            UnityEngine.Object.Destroy(this.gameObject);
+        }
+    }
+    
 }
