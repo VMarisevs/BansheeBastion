@@ -149,7 +149,7 @@ public class LevelManager : MonoBehaviour {
         //    enemySpawner();
 
         //}
-        if (enemiesSpawned.Count < 5)
+        if (enemiesSpawned.Count < 1)
         {
             if (spawnMob)
             {

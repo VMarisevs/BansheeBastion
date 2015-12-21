@@ -11,18 +11,33 @@ public class AEnemy : EntityThing {
     public bool air;
     public int attack_range;
     public AFriend friendTarget;
+    private int targetX, targetY;
     private Vector2 nextStep;
     //private Rigidbody2D rigibody;
     bool moveBool = true;
     bool cantMove;
 
+    public int minCost;
 
     public void Start()
     {
         changeTarget((int)transform.position.x, (int)transform.position.y);
     }
 
+    public int GetMinCost(int aX, int aY, int bX, int bY)
+    {
+        return Mathf.Abs(aX - bX) + Mathf.Abs(aY - bY);
+    }
 
+    private int[] findDirection(int aX, int aY, int bX, int bY)
+    {
+
+        int[] result = new int[2];
+
+
+        return result;
+
+    }
 
     public void move()
     {
@@ -50,12 +65,17 @@ public class AEnemy : EntityThing {
         
     }
 
+ 
+
     private Vector2 getNextStep()
     {
         int x = (int)transform.position.x;
         int y = (int)transform.position.y;
 
         int cost1, cost2, cost3;
+
+        minCost = GetMinCost(x, y, (int)friendTarget.transform.position.x, (int)friendTarget.transform.position.y);
+        print(minCost);
 
         cost1 = findPath(x + 1, y, y, 0);
 
@@ -95,35 +115,73 @@ public class AEnemy : EntityThing {
 
     }
 
+
+
     private int findPath(int x, int y, int oldY, int cost)
     {
+
+
+        //if (Mathf.Abs(aX - bX) != 0 && Mathf.Abs(aY - bY) != 0)
+        //{
+        //    if (Random.value >= 0.5)
+        //    {
+        //        result[0] = 1;
+        //    }
+        //    else
+        //    {
+        //        if (aY < bY)
+        //        {
+        //            result[1] = 1;
+
+
+        //        }
+        //        else
+        //        {
+        //            result[1] = -1;
+        //        }
+
+        //    }
+        //}
+
+
         int newCost;
         int testCost;
-        // 1 if (x,y outside maze) return false
+
         if (x < 0 || x >= MapManager.xCol || y < 0 || y >= MapManager.yRow)
-            return -100;
+            return 1000;
+
+        if (MapManager.mapArray[x, y] is AEnemy)
+            return 1000;
 
         if (MapManager.mapArray[x, y] == null)
             cost ++;
 
         if (MapManager.mapArray[x, y] is AFriend)
-            cost+=2;
+            cost+=3;
 
         // close to goal!!!
         if (atTheTarget(x, y))
             return cost;
 
         newCost = findPath(x + 1, y, y, cost);
+        if (newCost == minCost) return newCost;
 
         if (y - 1 != oldY)
-            newCost = (newCost < (testCost = findPath(x, y - 1, y, cost))) ? newCost  : testCost ;
+        {
+            testCost = findPath(x, y - 1, y, cost);
+            if (testCost == minCost) return testCost;
+            newCost = (newCost < testCost) ? newCost : testCost;
+        }
 
 
         if (y + 1 != oldY)
-            newCost = (newCost < (testCost = findPath(x, y + 1, y, cost))) ? newCost : testCost;   
+        {
+            testCost = findPath(x, y + 1, y, cost);
+            if (testCost == minCost) return testCost;
+            newCost = (newCost < testCost) ? newCost : testCost;
+        }
 
-
-        return newCost + cost;
+        return  cost;
     }
 
     public void run(Vector3 whereToGo)
@@ -199,6 +257,8 @@ public class AEnemy : EntityThing {
     public void setTarget(AFriend target)
     {
         friendTarget = target;
+        targetX = (int)target.transform.position.x;
+        targetY = (int)target.transform.position.y;
     }
 
 
