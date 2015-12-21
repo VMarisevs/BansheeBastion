@@ -10,21 +10,17 @@ public class Score : MonoBehaviour {
         _score += score;
     }
 
-    private int barWidth;
-    private int barHeight;
-    private int barX;
-    private int barY;
 
     void OnGUI()
     {
-        GUI.Box(new Rect(barX, barY, barWidth, barHeight), "Score: " + _score);
+        displayScore();
     }
 
-    public void Start()
+    private void displayScore()
     {
-        barWidth = 100;
-        barHeight = 20;
-        barX = 0;
-        barY = 0;
+        MenuPositions mp = MenuPositions.getInstance();
+        GUI.Box(mp.getScoreBox(), "Score: " + _score, mp.getBoxStyle());
+        
     }
+
 }
