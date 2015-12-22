@@ -30,7 +30,6 @@ public class MapManager : MonoBehaviour {
             mapArray[(int)newPos.x, (int)newPos.y] = character;
             mapArray[(int)oldPos.x, (int)oldPos.y] = null;
 
-            AEnemy tmp = (AEnemy)character;
             character.gameObject.GetComponent<Rigidbody2D>().MovePosition(newPos);
 
             return true;
