@@ -3,21 +3,16 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-/*
-Tools -> NutGet Packet Manager -> Manage Nut Get Packages for this Solution
-Search for "newtonsoft json" and install it
-This NutGet used to deserialize the Json, that received from web server 
-*/
-//using Newtonsoft.Json;
-//using Pathfinding.Serialization.JsonFx;
-//using JsonFX;
-//using Owl.Converter;
+
 
 public class UI : MonoBehaviour {
 
     public GameObject[] menuCanvas;
+
+
     //top 10
-    Person[] persons = new Person[10];
+    public GameObject[] playerTop;
+    private PlayerTop top10;
 
     // for play button        
     public void LoadScene(int level)
@@ -83,14 +78,32 @@ public class UI : MonoBehaviour {
         // check for errors
         if (www.error == null)
         {
-            // Dictionary<string, object> search = Json.Deserialize(response) as Dictionary<string, object>;
-
-             Debug.Log("WWW Ok!: " + www.data);
-
+            top10 = PlayerTop.CreateFromJSON(www.text);
+            print(top10.player1 + " " + top10.score1);
+            displayTopPlayers();
         }
         else
         {
             Debug.Log("WWW Error: " + www.error);
         }
+    }
+
+    private void displayTopPlayers()
+    {
+        /*
+            Unity doesn't supports native json parsing,
+            so it causes some issues with arrays of objects
+            this is temporary code that receives the top scores
+        */
+        playerTop[0].GetComponent<Text>().text = top10.player1 + " " + top10.score1;
+        playerTop[1].GetComponent<Text>().text = top10.player2 + " " + top10.score2;
+        playerTop[2].GetComponent<Text>().text = top10.player3 + " " + top10.score3;
+        playerTop[3].GetComponent<Text>().text = top10.player4 + " " + top10.score4;
+
+        //for (int i = 0; i < (playerTop.Length); i++)
+        //{
+        //    Text child = playerTop[i].GetComponent<Text>();
+        //    child.text = top10.player1 + " " + top10.score1;
+        //}
     }
 }
