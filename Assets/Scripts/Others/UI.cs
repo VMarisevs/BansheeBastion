@@ -79,7 +79,7 @@ public class UI : MonoBehaviour {
         if (www.error == null)
         {
             top10 = PlayerTop.CreateFromJSON(www.text);
-            print(top10.player1 + " " + top10.score1);
+            //print(top10.player1 + " " + top10.score1);
             displayTopPlayers();
         }
         else
