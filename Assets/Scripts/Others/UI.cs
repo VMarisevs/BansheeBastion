@@ -2,27 +2,37 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+/*
+Tools -> NutGet Packet Manager -> Manage Nut Get Packages for this Solution
+Search for "newtonsoft json" and install it
+This NutGet used to deserialize the Json, that received from web server 
+*/
+//using Newtonsoft.Json;
+//using Pathfinding.Serialization.JsonFx;
+//using JsonFX;
+//using Owl.Converter;
 
 public class UI : MonoBehaviour {
-    //private SpriteRenderer buttonSr;
-
-    //private Sprite[] uiSprites;
-
-    //public void Awake()
-    //{
-    //   // uiSprites = Resources.LoadAll<Sprite>("Sprites/UI");
-    //   //// print(uiSprites[0]);
-    //   // print(uiSprites.Length);
-    //}
 
     public GameObject[] menuCanvas;
-    //public bool[] menu = new bool[] { true, false }; 
-            
+    //top 10
+    Person[] persons = new Person[10];
+
+    // for play button        
     public void LoadScene(int level)
     {
         SceneManager.LoadScene(level);
     }
 
+    // quit game
+    public void quitGame()
+    {
+        Application.Quit();
+    }
+
+
+    // switch between tabs
     public void _openScoresTab()
     {
         changeMenu(1);
@@ -57,5 +67,30 @@ public class UI : MonoBehaviour {
     public void Start()
     {
        _openMainTab();
+        GetTop10();
+    }
+
+    private void GetTop10()
+    {
+        string url = "http://bansheebastion.vmarisevs.me/GetTop10.php";
+        WWW www = new WWW(url);
+        StartCoroutine(WaitForRequest(www));
+    }
+
+    IEnumerator WaitForRequest(WWW www)
+    {
+        yield return www;
+        // check for errors
+        if (www.error == null)
+        {
+            // Dictionary<string, object> search = Json.Deserialize(response) as Dictionary<string, object>;
+
+             Debug.Log("WWW Ok!: " + www.data);
+
+        }
+        else
+        {
+            Debug.Log("WWW Error: " + www.error);
+        }
     }
 }
