@@ -211,7 +211,7 @@ public class AEnemy : EntityThing {
     {
         _health -= damage;
         // add points to player
-        Score.addScore(damage);
+        LevelManager.addScore(damage);
 
         if (_health <= 0)
         {

@@ -3,29 +3,39 @@ using System.Collections;
 
 public class GameButtons : MonoBehaviour {
 
-	
-    public void OnGUI()
+    public GameObject _navbarCanvas;
+    public GameObject _marketCanvas;
+
+    public void Start()
     {
-        ShowMenu();
+        _closeMarket();
     }
 
-    private void ShowMenu()
+    public void _openMarket()
     {
-        printStoreButton();
+        _navbarCanvas.SetActive(false);
+        _marketCanvas.SetActive(true);
     }
 
-    private void printStoreButton()
+    public void _closeMarket()
     {
-        MenuPositions mp = MenuPositions.getInstance();
+        _navbarCanvas.SetActive(true);
+        _marketCanvas.SetActive(false);
+    }
 
-        if (GUI.Button(mp.getStoreButton(), "Store", mp.getButtonStyle()))
-        {
-            Store.showStore();
-        }
+    public void _cheat()
+    {
+        LevelManager.addScore(100);
+    }
 
-        if (GUI.Button(mp.getCheatButton(), "Cheat", mp.getButtonStyle()))
+    public void _buyKing()
+    {
+
+        // if score more that price of item
+        if (LevelManager.getScore() > 100)
         {
-            Score.addScore(100);
+            _closeMarket();
         }
+        
     }
 }

@@ -2,10 +2,12 @@
 using System.Collections;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour {
 
     // enemy variety
+    public GameObject _gameAction;
     public AEnemy[] enemyArray;
     public AFriend[] friendArray;
 
@@ -22,11 +24,16 @@ public class LevelManager : MonoBehaviour {
     private bool enemySpawnMob = true;
     private float enemySpawnDelay = 2;
 
+    public GameObject gameScore;
+    private static int _score;
+
     public void Start()
     {
 
         enemyHolder = new GameObject("EnemyHolder").transform;
         friendsHolder = new GameObject("friendsHolder").transform;
+        enemyHolder.SetParent(_gameAction.transform);
+        friendsHolder.SetParent(_gameAction.transform);
 
         createFriend(friendArray[0], new Vector2(MapManager.xCol - 1, (int)MapManager.yRow / 2));
 
@@ -134,7 +141,6 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-
     private IEnumerator waitAction(EntityThing entity)
     {
         yield return new WaitForSeconds(entity._speed);
@@ -152,4 +158,22 @@ public class LevelManager : MonoBehaviour {
 
     }
 
+
+
+    public void OnGUI()
+    {
+        gameScore.GetComponent<Text>().text = "Score:" + _score;
+    }
+
+
+
+    public static void addScore(int score)
+    {
+        _score += score;
+    }
+
+    public static int getScore()
+    {
+        return _score;
+    }
 }

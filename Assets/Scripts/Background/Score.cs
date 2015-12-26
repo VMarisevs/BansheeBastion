@@ -3,24 +3,24 @@ using System.Collections;
 
 public class Score : MonoBehaviour {
 
-    private static int _score = 0;
+    //private static int _score = 0;
 
-    public static void addScore(int score)
-    {
-        _score += score;
-    }
+    //public static void addScore(int score)
+    //{
+    //    _score += score;
+    //}
 
 
-    void OnGUI()
-    {
-        displayScore();
-    }
+    //void OnGUI()
+    //{
+    //    displayScore();
+    //}
 
-    private void displayScore()
-    {
-        MenuPositions mp = MenuPositions.getInstance();
-        GUI.Box(mp.getScoreBox(), "Score: " + _score, mp.getBoxStyle());
+    //private void displayScore()
+    //{
+    //    MenuPositions mp = MenuPositions.getInstance();
+    //    GUI.Box(mp.getScoreBox(), "Score: " + _score, mp.getBoxStyle());
         
-    }
+    //}
 
 }
