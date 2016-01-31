@@ -12,7 +12,7 @@ public class UI : MonoBehaviour {
 
     //top 10
     public GameObject[] playerTop;
-    private PlayerTop top10;
+    private PlayerInfo[] top5 = new PlayerInfo[5];
 
     // for play button        
     public void LoadScene(int level)
@@ -67,7 +67,7 @@ public class UI : MonoBehaviour {
 
     private void GetTop10()
     {
-        string url = "http://bansheebastion.vmarisevs.me/GetTop10.php";
+        string url = "https://stalloodyinglasernfithea:a4db51d72cb61a6ab06080500637bf1631073267@vmarisevs.cloudant.com/bansheebastion/_design/toplist/_view/top5?limit=5&descending=true";
         WWW www = new WWW(url);
         StartCoroutine(WaitForRequest(www));
     }
@@ -78,8 +78,24 @@ public class UI : MonoBehaviour {
         // check for errors
         if (www.error == null)
         {
-            top10 = PlayerTop.CreateFromJSON(www.text);
-            //print(top10.player1 + " " + top10.score1);
+            int first = www.text.IndexOf("\"rows\":") + "\"rows\":".Length;
+            int last = www.text.Length - 2 - first;
+            string result = www.text.Substring(first, last);
+
+
+            for (int i = 0; i < 5; i++)
+            {
+                int jsonStart = result.IndexOf("\"value\":") + "\"value\":".Length;
+                int jsonEnd = result.IndexOf("}}") + 1;
+                int jsonCount = jsonEnd - jsonStart;
+
+                string playerStats = result.Substring(jsonStart, jsonCount);
+
+                result = result.Substring(jsonEnd + "}}".Length + 1);
+
+                top5[i] = PlayerInfo.CreateFromJSON(playerStats);
+            }
+
             displayTopPlayers();
         }
         else
@@ -95,15 +111,10 @@ public class UI : MonoBehaviour {
             so it causes some issues with arrays of objects
             this is temporary code that receives the top scores
         */
-        playerTop[0].GetComponent<Text>().text = top10.player1 + " " + top10.score1;
-        playerTop[1].GetComponent<Text>().text = top10.player2 + " " + top10.score2;
-        playerTop[2].GetComponent<Text>().text = top10.player3 + " " + top10.score3;
-        playerTop[3].GetComponent<Text>().text = top10.player4 + " " + top10.score4;
+        for (int i = 0; i < playerTop.Length; i++)
+        {
+            playerTop[i].GetComponent<Text>().text = top5[i].name + " " + top5[i].score;
+        }
 
-        //for (int i = 0; i < (playerTop.Length); i++)
-        //{
-        //    Text child = playerTop[i].GetComponent<Text>();
-        //    child.text = top10.player1 + " " + top10.score1;
-        //}
     }
 }
