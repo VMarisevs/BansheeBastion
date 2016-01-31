@@ -11,6 +11,7 @@ public class AEnemy : EntityThing {
     public bool _air;
     public int _attackRange;
 	
+    private List<Vector2> closedSet;
     public AFriend _friendTarget;
 
     private Vector2 nextStep;
@@ -46,6 +47,7 @@ public class AEnemy : EntityThing {
     {
         int x = (int)transform.position.x;
         int y = (int)transform.position.y;
+        closedSet = new List<Vector2>();
 
         if (findPath(x + 1, y, y))
             return new Vector2(1, 0);
@@ -64,12 +66,14 @@ public class AEnemy : EntityThing {
     {
 
         // 1 if (x,y outside maze) return false
+        if (closedSet.Contains(new Vector2(x, y)))
+            return false;
+
         if (x < 0 || x >= MapManager.xCol || y < 0 || y >= MapManager.yRow)
             return false;
 
         if (MapManager.mapArray[x, y] != null)          
             return false;
-       
         // close to goal!!!
         if (atTheTarget(x, y))
             return true;
@@ -83,6 +87,7 @@ public class AEnemy : EntityThing {
         if (y + 1 != oldY && findPath(x, y + 1, y))
             return true;
 
+        closedSet.Add(new Vector2(x, y));
 
         return false;
     }
@@ -106,7 +111,7 @@ public class AEnemy : EntityThing {
         int distance = MapCalc.GetMinCost(new Vector2(myX, myY), new Vector2(targetX,targetY));
 
         //print("myX:" + myX + " myY" + myY + " targetX:"+ targetX + " targetY:" + targetY + " Distance " + distance);
-        if ( distance <= _attackRange)
+        if (distance <= _attackRange)
             return true;
 
         return false;
@@ -153,7 +158,7 @@ public class AEnemy : EntityThing {
         if (!(LevelManager.friendsSpawned.Count < 1))
         {
             //print("trying to change target");
-            // looking for best target
+            //looking for best target
             for (int i = 0; i < LevelManager.friendsSpawned.Count; i++)
             {
 
