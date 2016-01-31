@@ -59,20 +59,56 @@ public class UI : MonoBehaviour {
     }
 
 
+    public void SubmitScore(string name, int score)
+    {
+        string url = "https://stalloodyinglasernfithea:a4db51d72cb61a6ab06080500637bf1631073267@vmarisevs.cloudant.com/bansheebastion";
+
+        WWWForm form = new WWWForm();
+        string postdata = "{\"name\":\"" + name + "\",\"score\":" + score + "}";
+        byte[] data = System.Text.Encoding.UTF8.GetBytes(postdata);
+
+
+        System.Collections.Generic.Dictionary<string,string> headers = form.headers;
+        headers["Content-Type"] = "application/json";
+
+        WWW www = new WWW(url, data, headers);
+
+
+        StartCoroutine(WaitForRequest(www));
+
+    }
+
+    private IEnumerator WaitForRequest(WWW www)
+    {
+        yield return www;
+
+        // check for errors
+        if (www.error == null)
+        {
+            Debug.Log("WWW Ok!: " + www.text);
+        }
+        else {
+            Debug.Log("WWW Error: " + www.error);
+        }
+    }
+
     public void Start()
     {
        _openMainTab();
         GetTop10();
+
+        //SubmitScore("first", 234123);
+
     }
 
     private void GetTop10()
     {
         string url = "https://stalloodyinglasernfithea:a4db51d72cb61a6ab06080500637bf1631073267@vmarisevs.cloudant.com/bansheebastion/_design/toplist/_view/top5?limit=5&descending=true";
         WWW www = new WWW(url);
-        StartCoroutine(WaitForRequest(www));
+        StartCoroutine(WaitForRequestPlayerTop(www));
     }
 
-    IEnumerator WaitForRequest(WWW www)
+    IEnumerator WaitForRequestPlayerTop(WWW www)
     {
         yield return www;
         // check for errors
