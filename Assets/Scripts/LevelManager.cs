@@ -35,33 +35,33 @@ public class LevelManager : MonoBehaviour {
         enemyHolder.SetParent(_gameAction.transform);
         friendsHolder.SetParent(_gameAction.transform);
 
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 1));
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 2));
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 3));
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 4));
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 5));
-        createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 6));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 1));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 2));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 3));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 4));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 5));
+        //createEnemy(enemyArray[0], new Vector2(0, (int)MapManager.yRow - 6));
 
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 1));
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 2));
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 3));
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 4));
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 5));
-        createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 6));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 1));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 2));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 3));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 4));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 5));
+        //createEnemy(enemyArray[0], new Vector2(1, (int)MapManager.yRow - 6));
 
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 1));
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 2));
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 3));
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 4));
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 5));
-        createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 6));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 1));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 2));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 3));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 4));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 5));
+        //createEnemy(enemyArray[0], new Vector2(2, (int)MapManager.yRow - 6));
 
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 1));
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 2));
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 3));
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 4));
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 5));
-        createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 6));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 1));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 2));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 3));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 4));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 5));
+        //createEnemy(enemyArray[0], new Vector2(3, (int)MapManager.yRow - 6));
 
 
 
@@ -81,7 +81,15 @@ public class LevelManager : MonoBehaviour {
 
         //print(" friends spawned :" + friendsSpawned.Count);
     }
-    
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Enemy")
+            coll.gameObject.SendMessage("ApplyDamage", 10);
+
+    }
+
     private void createEnemy(AEnemy enemy)
     {
         bool spawned = false;
@@ -94,19 +102,23 @@ public class LevelManager : MonoBehaviour {
            
             int y = Random.Range(0, MapManager.yRow - 1);
 
-         //   if (MapManager.pathArray[x, y] == '.')
-         //   {
+
             
-                Vector3 pos = new Vector2(x, y);
-            createEnemy(enemy,pos);
-            //AEnemy instance = Instantiate(enemy, pos, Quaternion.identity) as AEnemy;
+             Vector3 pos = new Vector2(x, y);
 
-            //    instance.transform.SetParent(enemyHolder.transform); 
 
-               // MapManager.pathArray[x,y] = '#';
-             //   enemiesSpawned.Add(instance);
+            if(Physics2D.OverlapCircleAll(pos, .4f).Length <1)
+            {
+
+                createEnemy(enemy, pos);
+
                 spawned = true;
-          //  }
+            }
+
+
+
+        
+       
 
             if (counter > MapManager.yRow)
             {
@@ -183,7 +195,7 @@ public class LevelManager : MonoBehaviour {
             if (friend._action)
             {
                 friend._action = false;
-                friend.attack();
+                //friend.attack();
                 StartCoroutine(waitAction(friend));
             }
         }
@@ -199,10 +211,11 @@ public class LevelManager : MonoBehaviour {
     public void Update()
     {
  
-       // SpawnEnemies();
+        SpawnEnemies();
+
         MoveEnemies();
 
-        FriendsAttack();
+       // FriendsAttack();
 
     }
 

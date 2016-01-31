@@ -36,25 +36,25 @@ public class AFriend : EntityThing {
     {
 
         if (haveATarget())
-		{
-			if (waitForAttack)
-			{
-				waitForAttack = false;
+        {
+            if (waitForAttack)
+            {
+                waitForAttack = false;
 
-				
-				// then check the range and attack
-				if (inRangeToAttackTarget())
-					attackTarget();
-				
 
-				//StartCoroutine(WaitMove());
+                // then check the range and attack
+                if (inRangeToAttackTarget())
+                    attackTarget();
 
-				waitForAttack = true;
 
-			}
-		}
+                //StartCoroutine(WaitMove());
 
-        
+                waitForAttack = true;
+
+            }
+        }
+
+
     }
 
 /*
@@ -67,6 +67,7 @@ public class AFriend : EntityThing {
         int myX = (int)transform.position.x;
         int myY = (int)transform.position.y;
         Vector2 myPosition = new Vector2(myX, myY);
+   
 
         // if there is atleast 1 friend, then checking and returning index
         if (!(LevelManager.enemiesSpawned.Count < 1))
