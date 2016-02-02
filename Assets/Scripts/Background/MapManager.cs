@@ -12,10 +12,6 @@ public class MapManager : MonoBehaviour {
     public GameObject[] groundTiles;
 
     public static EntityThing[,] mapArray = new EntityThing[xCol, yRow];
-    //public static int[,] pathArray = new int[xCol, yRow];
-
-    public static char[,] pathArray = new char[xCol, yRow];
-
 
     // private variables
     private Transform groundHolder;
@@ -27,8 +23,11 @@ public class MapManager : MonoBehaviour {
         
         if (mapArray[(int)newPos.x, (int)newPos.y] == null)
         {
+            DisplayCharactersBehaviour();
             mapArray[(int)newPos.x, (int)newPos.y] = character;
-            mapArray[(int)oldPos.x, (int)oldPos.y] = null;
+
+            if (oldPos != null)
+                mapArray[(int)oldPos.x, (int)oldPos.y] = null;
 
             character.gameObject.GetComponent<Rigidbody2D>().MovePosition(newPos);
 
@@ -37,7 +36,23 @@ public class MapManager : MonoBehaviour {
         return false;
     }
 
+    private static void DisplayCharactersBehaviour()
+    {
+        string row = "";
 
+        for (int i = yRow - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < xCol; j++)
+            {
+                if (mapArray[j, i] == null)
+                    row += " .";
+                else
+                    row += " x";
+            }
+            row += "\n";
+        }
+        print(row);
+    }
 
 
         // buld the map
@@ -60,76 +75,8 @@ public class MapManager : MonoBehaviour {
                 instance.transform.SetParent(groundHolder);
             }
         }
-
-        clearPathArray();
-
     }
-
-    private static void clearPathArray()
-    {
-        // init pathMap
-        /*
-        for (int i = 0; i < pathArray.GetLength(0); i++)
-        {
-            for (int j=0; j < pathArray.GetLength(1); j++)
-            {
-                pathArray[i,j] = '.';
-            }
-        }*/
-        pathArray = new char[,] { //y 0   1   2   3   4   5   6   7 
-                                    {'.','.','.','.','.','.','.','.'}, // 0 x
-                                    {'.','.','.','.','.','.','.','.'}, // 1
-                                    {'.','.','.','.','.','.','.','.'}, // 2
-                                    {'.','.','.','.','.','.','.','.'}, // 3
-                                    {'.','.','.','.','.','.','.','.'}, // 4 
-                                    {'.','.','.','.','.','.','.','.'}, // 5
-                                    //{'#','#','#','#','#','#','.','#'}, // 5
-                                    {'.','.','.','.','.','.','.','.'}, // 6
-                                    {'.','.','.','.','.','.','.','.'}, // 7
-                                    {'.','.','.','.','.','.','.','.'}, // 8
-                                    {'.','.','.','.','.','.','.','.'}, // 9
-                                    {'.','.','.','.','T','.','.','.'}, // 10
-                                    {'.','.','.','.','.','.','.','.'}, // 11
-                                    {'.','.','.','.','.','.','.','.'}, // 12
-                                    {'.','.','.','.','.','.','.','.'}, // 13
-                                    {'.','.','.','.','.','.','.','.'}, // 14
-                                    {'.','.','.','.','.','.','.','.'}, // 15
-                                                                                                 
-        };                                                                                    
-    }                                                                                             
-
     
-    public static void clearPathFromPath()
-    {
-        for (int y = 0; y < yRow; y++)
-        {
-            for (int x = 0; x < xCol; x++)
-            {
-                if (pathArray[x, y] == 'x' || pathArray[x, y] == '+')
-                {
-                    pathArray[x, y] = '.';
-                }
-            }
-        }
-    }
-	
-    public static void displayPathMap()
-    {
-        string path = "";
-        //for (int y = 0; y < yRow; y++)
-        for (int y = yRow-1; y >= 0; y--)
-        {
-            for (int x = 0; x < xCol; x++)
-            {
-                if (pathArray[x, y] == '.')
-                    path += " O";// + pathArray[x, y];
-                else
-                    path += " " + pathArray[x, y];
-            }
-            path += "\n";
-        }
-        print(path);
-    }
     // generates the scene
     public void SetupScene()
     {
