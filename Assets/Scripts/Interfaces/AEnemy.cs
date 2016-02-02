@@ -97,7 +97,8 @@ public class AEnemy : EntityThing {
         
         Rigidbody2D rg = gameObject.GetComponent<Rigidbody2D>();
 
-        MapManager.putCharacter(this, transform.position + whereToGo , transform.position);
+        MapManager map = MapManager.instance;
+            map.putCharacter(this, transform.position + whereToGo , transform.position);
         rg.MovePosition(this.transform.position + whereToGo);
     }
 
